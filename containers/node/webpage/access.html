@@ -1,0 +1,23 @@
+<html>
+  <head>
+    <script>
+      function start() {
+        gapi.client.init({
+          'apiKey': '...',
+          'discoveryDocs': [...],
+          ...
+        }).then(...)
+      };
+
+      function loadClient() {
+        gapi.load('client', start);
+      }
+    </script>
+    <script async defer src="https://apis.google.com/js/api.js"
+      onload="this.onload=function(){};loadClient()"
+      onreadystatechange="if (this.readyState === 'complete') this.onload()"></script>
+  </head>
+  <body>
+    <div id="body-to-be-shown-before-gapi-load"></div>
+  </body>
+</html>
