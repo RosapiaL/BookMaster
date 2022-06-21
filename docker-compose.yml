@@ -1,0 +1,64 @@
+version: '3'
+services:
+    nginx:
+        build: "./containers/nginx"
+        depends_on:
+            - node1
+            - node2
+            - node3
+        ports:
+            - "8888:80"
+            - "443:443"
+        networks:
+            - app-network
+
+    node1:
+        build: "./containers/node1"
+        ports:
+            - "3000"
+        environment:
+            - INSTANCE=node1
+            - DB_NAME=mongodb
+            - PORT=3000
+        networks:
+            - app-network
+            - db-network
+
+    node2:
+        build: "./containers/node2"
+        ports:
+            - "3000"
+        environment:
+            - INSTANCE=node2
+            - DB_NAME=mongodb
+            - PORT=3000
+        networks:
+            - app-network
+            - db-network
+
+
+    node3:
+        build: "./containers/node3"
+        ports:
+          - "3000"
+        environment:
+          - INSTANCE=node3
+          - DB_NAME=mongodb
+          - PORT=3000
+        networks:
+          - app-network
+          - db-network
+
+
+    mongodb:
+        build: "./containers/mongo"
+        container_name: "mongodb"
+        networks:
+            - db-network
+
+networks:
+    app-network:
+      driver: bridge
+    db-network:
+      driver: bridge
+
