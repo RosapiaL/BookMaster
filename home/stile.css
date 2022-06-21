@@ -2,12 +2,21 @@ body{
     background-color:rgb(46, 50, 56);
 }
 
-#home:hover{
+.acti{
+    transition: width 1s;
+}
+
+.acti:hover {
+    border-radius: 5px;
+    background-color: rgb(46, 50, 56);
+    color: white !important;
     text-decoration: underline;
 }
-#search:hover{
-    text-decoration: underline;
-}
-#mybooks:hover{
-    text-decoration: underline;
+h1{
+    position:static;
+    padding-top: 250px;
+    align-items: center;
+    font-family: 'Tahoma', 'Trebuchet MS';
+    color: white;
+    text-shadow: 1px 1px 2px #000000;
 }
