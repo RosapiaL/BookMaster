@@ -1,17 +1,12 @@
 const express = require('express')
 const app = express()
 const port = 3000
-
+const name = process.env.NAME_OF_NODE || "uno"
 
 app.get('/', (req, res) => {
-    res.sendFile("access.html", { root: "./webpage" });
+    res.send(`Hello ${name} !`)
+})
 
-  })
-  app.get('/casa', (req, res) => {
-    res.send("reti di calcolatori");
-
-  })
-
-  app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`)
-  })
+app.listen(port, () => {
+    console.log(`Server Started on Port  ${port}`)
+})

@@ -1,64 +1,57 @@
-version: '3'
+version: "3.8"
 services:
-    nginx:
-        build: "./containers/nginx"
-        depends_on:
-            - node1
-            - node2
-            - node3
-        ports:
-            - "8888:80"
-            - "443:443"
-        networks:
-            - app-network
+  nginx:
+    image: nginx:latest
+    ports:
+      - 3000:3000
+      - 443:443
+    volumes:
+      - ./containers/nginx/nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      - app
+    depends_on:
+      - node1
+      - node2
+      - node3
 
-    node1:
-        build: "./containers/node"
-        ports:
-            - "3000"
-        environment:
-            - INSTANCE=node1
-            - DB_NAME=mongodb
-            - PORT=3000
-        networks:
-            - app-network
-            - db-network
+  node1:
+    image: node:latest
+    ports:
+      - 3001:3000
+    container_name: "node1"
+    volumes: 
+    - ./containers/node:/usr/app/
+    command: node ./usr/app/server.js
+    networks:
+      - app
+    environment:
+      - NAME_OF_NODE=node1
 
-    node2:
-        build: "./containers/node"
-        ports:
-            - "3000"
-        environment:
-            - INSTANCE=node2
-            - DB_NAME=mongodb
-            - PORT=3000
-        networks:
-            - app-network
-            - db-network
+  node2:
+    image: node:latest
+    ports:
+      - 3002:3000
+    networks:
+      - app
+    container_name: "node2"
+    volumes: 
+      - ./containers/node:/usr/app/
+    command: node ./usr/app/server.js
+    environment:
+      - NAME_OF_NODE=node2
 
-
-    node3:
-        build: "./containers/node"
-        ports:
-          - "3000"
-        environment:
-          - INSTANCE=node3
-          - DB_NAME=mongodb
-          - PORT=3000
-        networks:
-          - app-network
-          - db-network
-
-
-    mongodb:
-        build: "./containers/mongo"
-        container_name: "mongodb"
-        networks:
-            - db-network
+  node3:
+    image: node:latest
+    ports:
+      - 3003:3000
+    networks:
+      - app
+    container_name: "node3"
+    volumes: 
+      - ./containers/node:/usr/app/
+    command: node ./usr/app/server.js
+    environment:
+      - NAME_OF_NODE=node3
 
 networks:
-    app-network:
-      driver: bridge
-    db-network:
-      driver: bridge
-
+  app:
