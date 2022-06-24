@@ -1,27 +1,33 @@
 const express = require('express');
-const app = express();
+var app = express();
 const port = 3000;
 const {google} = require("googleapis");
-const request = require("request");
+var request = require("request");
 const cors = require("cors");
 const urlParse = require("url-parse");
 const queryParse = require("query-string");
 const bodyParser = require("body-parser");
 const axios = require("axios");
 
+app.use(express.json());
 //620651589897-nj3i7d6lseqnmonr21gkkuvh6ntcbmjc.apps.googleusercontent.com
 //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
-
 app.use(cors());
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json());
+var access_token = null;
+const name = process.env.NAME_OF_NODE || "uno";
 
-app.get("/",(req,res) => {
+app.get('/',function(req,res){
+    res.send('hello'+ name + '!');
+});
+
+app.get("/oauth",(req,res) => {
     const oauth2Client = new google.auth.OAuth2(
         //client id
-        "251108875342-4v8smdsvvqujm8nte6bb4m8har234rk1.apps.googleusercontent.com",
+        "620651589897-nj3i7d6lseqnmonr21gkkuvh6ntcbmjc.apps.googleusercontent.com",
         //client secret
-        "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",
+        "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",
         //link to redirect
         "http://localhost:3000/steps"
     )
@@ -38,12 +44,38 @@ app.get("/",(req,res) => {
         console.log("error: ",err);
         console.log("statusCode: ", response && response.statusCode);
         res.send("<a href= "+url+"> authenticate with google <\a>");
+        
     });
 });
 
-app.get("/steps",(req,res) =>{
+app.get("/steps",async (req,res) =>{
     const queryURL = new urlParse(req.url);
     const code = queryParse.parse(queryURL.query).code;
-    console.log(code);
+    const oauth2Client = new google.auth.OAuth2(
+        //client id
+        "620651589897-nj3i7d6lseqnmonr21gkkuvh6ntcbmjc.apps.googleusercontent.com",
+        //client secret
+        "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",
+        //link to redirect
+        "http://localhost:3000/steps"
+    );
+    const tokens = await oauth2Client.getToken(code);
+    access_token = JSON.stringify(tokens.tokens.access_token);
+    res.send(tokens.tokens.access_token);
+    console.log(tokens.tokens.access_token);
+});
+app.get("/mylibrary",function(req,res){
+    var options = {
+        url: "https://www.googleapis.com/books/v1/mylibrary/bookshelves?key=AIzaSyCgkSMk35arxIz9xmZ9GPwTAAUxvuVYzzs",
+        headers:{
+            Authorization : "Bearer " + access_token,
+            'content-type':'application/json',
+        },
+       };
+    request.get(options,function(error,response,body){
+        console.log(access_token);
+        console.log(body);
+        res.send(body);
+    });
 });
 app.listen(port,() => console.log('google book listening on port ' + port));
