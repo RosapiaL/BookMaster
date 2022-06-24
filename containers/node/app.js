@@ -10,10 +10,10 @@ const bodyParser = require("body-parser");
 const axios = require("axios");
 //620651589897-nj3i7d6lseqnmonr21gkkuvh6ntcbmjc.apps.googleusercontent.com
 //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
+
 app.use(cors());
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json());
-
 
 app.get("/getURLting",(req,res) => {
     const oauth2Client = new google.auth.OAuth2(
