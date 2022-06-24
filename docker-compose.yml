@@ -15,41 +15,32 @@ services:
       - node3
 
   node1:
-    image: node:latest
+    build: ./containers/node
     ports:
       - 3001:3000
     container_name: "node1"
-    volumes: 
-    - ./containers/node_pug:/usr/app/
-    command: npm run devstart
     networks:
       - app
     environment:
       - NAME_OF_NODE=node1
 
   node2:
-    image: node:latest
+    build: ./containers/node
     ports:
       - 3002:3000
     networks:
       - app
     container_name: "node2"
-    volumes: 
-      - ./containers/node_pug:/usr/app/
-    command: npm run devstart
     environment:
       - NAME_OF_NODE=node2
 
   node3:
-    image: node:latest
+    build: ./containers/node
     ports:
       - 3003:3000
     networks:
       - app
     container_name: "node3"
-    volumes: 
-      - ./containers/node_pug:/usr/app/
-    command: npm run devstart
     environment:
       - NAME_OF_NODE=node3
 
