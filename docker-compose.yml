@@ -20,8 +20,8 @@ services:
       - 3001:3000
     container_name: "node1"
     volumes: 
-    - ./containers/node:/usr/app/
-    command: node ./usr/app/server.js
+    - ./containers/node_pug:/usr/app/
+    command: npm run devstart
     networks:
       - app
       - db
@@ -37,8 +37,8 @@ services:
       - db
     container_name: "node2"
     volumes: 
-      - ./containers/node:/usr/app/
-    command: node ./usr/app/server.js
+      - ./containers/node_pug:/usr/app/
+    command: npm run devstart
     environment:
       - NAME_OF_NODE=node2
 
@@ -51,8 +51,8 @@ services:
       - db
     container_name: "node3"
     volumes: 
-      - ./containers/node:/usr/app/
-    command: node ./usr/app/server.js
+      - ./containers/node_pug:/usr/app/
+    command: npm run devstart
     environment:
       - NAME_OF_NODE=node3
     
