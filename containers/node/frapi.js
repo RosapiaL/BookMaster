@@ -3,9 +3,6 @@ const session = require('express-session');
 const passport = require('passport');
 require('./auth');
 
-
-
-
 function isLoggedIn(req, res, next){
     req.user ? next() : res.sendStatus(401);
 }
@@ -47,8 +44,8 @@ app.get('/logout', function(req, res, next) {
 
 
 app.get('/protected', isLoggedIn , (req,res) => {
-
-    res.send(`Hello ${req.user.displayName}`);
+6
+    res.send(`Hello ${req.user.}`);
 });
 
-app.listen(5000, ()=>console.log('listening on port 5000'));
+app.listen(5000, ()=>console.log('listening on port 5000')); 
