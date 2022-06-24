@@ -21,6 +21,7 @@ services:
     container_name: "node1"
     networks:
       - app
+      - db
     environment:
       - NAME_OF_NODE=node1
 
@@ -30,6 +31,7 @@ services:
       - 3002:3000
     networks:
       - app
+      - db
     container_name: "node2"
     environment:
       - NAME_OF_NODE=node2
@@ -40,9 +42,25 @@ services:
       - 3003:3000
     networks:
       - app
+      - db
     container_name: "node3"
     environment:
       - NAME_OF_NODE=node3
-
+    
+  mongodb:
+    image: mongo:latest
+    ports:
+      - 27017:27017
+    container_name: "my-mongo-container"
+    volumes:
+      - ./containers/mongo:/data/db
+      - ./containers/mongo/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=citizix
+      - MONGO_INITDB_ROOT_PASSWORD=S3cret
+      - MONGO_INITDB_DATABASE=BookMaster
+    networks:
+      - db
 networks:
   app:
+  db:
