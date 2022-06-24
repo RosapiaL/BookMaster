@@ -13,9 +13,9 @@ const axios = require("axios");
 app.use(cors());
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json());
+var access_token = null;
 
-
-app.get("/getURLting",(req,res) => {
+app.get("/oauth",(req,res) => {
     const oauth2Client = new google.auth.OAuth2(
         //client id
         "620651589897-nj3i7d6lseqnmonr21gkkuvh6ntcbmjc.apps.googleusercontent.com",
@@ -37,12 +37,40 @@ app.get("/getURLting",(req,res) => {
         console.log("error: ",err);
         console.log("statusCode: ", response && response.statusCode);
         res.send("<a href= "+url+"> authenticate with google <\a>");
+        
     });
 });
 
-app.get("/steps",(req,res) =>{
+app.get("/steps",async (req,res) =>{
     const queryURL = new urlParse(req.url);
     const code = queryParse.parse(queryURL.query).code;
-    console.log(code);
+    const oauth2Client = new google.auth.OAuth2(
+        //client id
+        "620651589897-nj3i7d6lseqnmonr21gkkuvh6ntcbmjc.apps.googleusercontent.com",
+        //client secret
+        "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",
+        //link to redirect
+        "http://localhost:3000/steps"
+    );
+    const tokens = await oauth2Client.getToken(code);
+    access_token = tokens.tokens.access_token;
+    res.send(tokens.tokens.access_token);
+    console.log(tokens.tokens.access_token);
+});
+app.get("/mylibrary",function(req,res){
+    request({
+        url:"https://www.googleapis.com/books/v1/mylibrary/bookshelves?key=AIzaSyCgkSMk35arxIz9xmZ9GPwTAAUxvuVYzzs",
+        method: 'GET',
+        headers:{
+            Authorization : access_token
+        } 
+    },function(error, response, body){
+        if(error) {
+            console.log(error);
+        } else {
+            res.send(response.statusCode+" "+body)
+            console.log(response.statusCode, body);
+        }
+    });
 });
 app.listen(port,() => console.log('google book listening on port ' + port));
