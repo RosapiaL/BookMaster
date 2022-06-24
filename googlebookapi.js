@@ -6,7 +6,7 @@ function callback(error,response,body){
     if (!error && response.statusCode == 200){
         var info = JSON.parse(body);
         //console.log(info);
-        console.log(info.items[0].volumeInfo.authors);
+        console.log(info.items[0].volumeInfo.authors[0]);
     }
 }
 
