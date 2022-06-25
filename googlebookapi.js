@@ -5,8 +5,11 @@ var options = {
 function callback(error,response,body){
     if (!error && response.statusCode == 200){
         var info = JSON.parse(body);
-        //console.log(info);
-        console.log(info.items[0].volumeInfo.authors[0]);
+        for(var i = 0;i < info.items.length;i++){
+
+            console.log(info.items[i].volumeInfo.title);
+        }
+        
     }
 }
 

@@ -8,6 +8,7 @@ const queryParse = require("query-string");
 const bodyParser = require("body-parser");
 const axios = require("axios");
 const cookieParser = require('cookie-parser');
+
 /* GET home page. */
 router.get('/', function(req, res) {
   res.render('index', { title: 'Express' });
@@ -83,18 +84,19 @@ router.get("/mylibrary",function(req,res){
   }
 });
 router.get('/book', function(req, res) {
+  const queryURL = new urlParse(req.url);
+  const search = queryParse.parse(queryURL.query).search;
   var options = {
-    url:'https://www.googleapis.com/books/v1/volumes?q=termodinamica&key=AIzaSyCgkSMk35arxIz9xmZ9GPwTAAUxvuVYzzs',
+    url:'https://www.googleapis.com/books/v1/volumes?q='+search+'&key=AIzaSyCgkSMk35arxIz9xmZ9GPwTAAUxvuVYzzs',
 }
 function callback(error,response,body){
     if (!error && response.statusCode == 200){
         var info = JSON.parse(body);
-        var autori = new Array(3);
-        autori[0] = JSON.stringify(info.items[0].volumeInfo.authors[0]);
-        autori[1] = JSON.stringify(info.items[1].volumeInfo.authors[0]);
-        autori[2] = JSON.stringify(info.items[2].volumeInfo.authors[0]);
-        console.log(autori[0]);
-        res.render('book', { title: 'Search', autori: autori[0]});
+        var libri = new Array(info.items.length);
+        for(var i = 0;i < info.items.length;i++){
+          libri[i] = info.items[i].volumeInfo.title;
+      }
+        res.render('book', { title: 'book', libri:libri});
     }
 }
 
