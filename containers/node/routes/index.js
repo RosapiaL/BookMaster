@@ -93,10 +93,17 @@ function callback(error,response,body){
     if (!error && response.statusCode == 200){
         var info = JSON.parse(body);
         var libri = new Array(info.items.length);
+        var src_images = new Array(info.items.length);
+        var indici = new Array(info.items.length);
         for(var i = 0;i < info.items.length;i++){
+          indici[i] = i;
           libri[i] = info.items[i].volumeInfo.title;
+          if(info.items[i].volumeInfo.imageLinks!= undefined)
+                src_images[i] = (info.items[i].volumeInfo.imageLinks.smallThumbnail);
+                else
+                src_images[i] = ("./images/logo_libro.png");
       }
-        res.render('book', { title: 'book', libri:libri});
+        res.render('book', { title: 'book', libri:libri, sorgenti: src_images, indici: indici});
     }
 }
 

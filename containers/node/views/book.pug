@@ -34,4 +34,10 @@ html(lang='en')
                 li
                   a#mybooks.acti.nav-link.px-2(href='#' style='color: rgb(46, 50, 56)') MY BOOKS
           form.d-flex
-    h1= libri
+    ul
+      for indice in indici
+        h1= libri[indice]
+        img(src= sorgenti[indice])
+      else
+        h1 sorry, no books!
+
