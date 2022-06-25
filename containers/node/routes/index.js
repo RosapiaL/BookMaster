@@ -18,7 +18,7 @@ router.get('/search', function(req, res) {
   res.render('search', { title: 'Search' });
 });
 
-router.get('/oauth', function(req, res) {
+router.get('/mybook', function(req, res) {
   const oauth2Client = new google.auth.OAuth2(
       //client id
       "620651589897-nj3i7d6lseqnmonr21gkkuvh6ntcbmjc.apps.googleusercontent.com",
@@ -39,7 +39,7 @@ router.get('/oauth', function(req, res) {
   request(url,(err,response,body) => {
       console.log("error: ",err);
       console.log("statusCode: ", response && response.statusCode);
-      res.render('oauth',{
+      res.render('mylibrary',{
         tile: 'oauth',
         url: url
       });
@@ -79,7 +79,7 @@ router.get("/mylibrary",function(req,res){
     request.get(options,function(error,response,body){
         console.log(access_token_cookie);
         console.log(body);
-        res.send(body);
+        res.render("steps", { title: 'mybook' });
     });
   }
 });
