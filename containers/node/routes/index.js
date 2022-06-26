@@ -83,6 +83,28 @@ router.get("/mylibrary",function(req,res){
     });
   }
 });
+router.post("/to_read",function(req,res){
+    
+  access_token_cookie = JSON.stringify(req.cookies.un_biscotto_per_te);
+  access_token_cookie = access_token_cookie.split('"')[2].slice(0,-1);
+
+  if(access_token_cookie){
+    var options = {
+      url: "https://www.googleapis.com/books/v1/mylibrary/bookshelves/0/addVolume?volumeId=NRWlitmahXkC&key=AIzaSyCgkSMk35arxIz9xmZ9GPwTAAUxvuVYzzs",
+      headers:{
+          Authorization : "Bearer " + access_token_cookie,
+          'content-type':'application/json',
+          'Content-length': 'CONTENT-LENGTH'
+        }
+    };
+    
+    request.post(options,function(error,response,body){
+        console.log(access_token_cookie);
+        console.log(body);
+        res.render("steps", { title: 'mybook' });
+    });
+  }
+});
 router.get('/book', function(req, res) {
   const queryURL = new urlParse(req.url);
   const search = queryParse.parse(queryURL.query).search;
