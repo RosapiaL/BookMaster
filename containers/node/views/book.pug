@@ -36,8 +36,20 @@ html(lang='en')
           form.d-flex
     ul
       for indice in indici
-        h1= libri[indice]
-        img(src= sorgenti[indice])
+        #informazioni.row
+          .col-3
+            img(src= sorgenti[indice])
+          .col-8
+            ul(style='list-style-type:none')
+              li
+                form(action='/add')
+                  input#to_read.btn.btn-light(type='submit' value='TO READ')
+              li
+                form(action='/favorite')
+                  input#to_read.btn.btn-light(type='submit' value='FAVORITES')
+              li
+                form(action='/READ')
+                  input#to_read.btn.btn-light(type='submit' value='READ')
       else
         h1 sorry, no books!
 

@@ -47,11 +47,26 @@
     </div>
   </div>
   </nav>
-  <ul>
-    <li>primo elemento</li>
-    <img src="http://books.google.com/books/content?id=1gHfDwAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api">
-    <li>secondo elemento</li>
-    <li>terzo elemento</li>
-  </ul>
+  <div class="row" id="informazioni">
+    <div class="col-3"><img id= "logo_libri"src="http://books.google.com/books/content?id=1gHfDwAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api"></div>
+    <div class="col-8">
+      <ul style="list-style-type:none">
+        <li>
+          <form action="/add">
+            <input class="btn btn-light" id="to_read" type="submit" value="TO READ" >
+          </form>
+        </li>
+        <li>
+          <form action="/favorite">
+            <input class="btn btn-light" id="to_read" type="submit" value="FAVORITES" >
+          </form>        </li>
+        <li>
+          <form action="index.html">
+            <input class="btn btn-light" id="to_read" type="submit" value="READ" >
+          </form>
+        </li>
+      </ul>
+    </div>
+ 
 </body>
 </html>
