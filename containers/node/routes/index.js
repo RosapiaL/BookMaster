@@ -30,7 +30,7 @@ router.get('/search', function(req, res) {
 });
 
 router.get('/mybook', function(req, res) {
-  if(getValoreAccesso(req)){
+  if(getValoreAccesso(req)=="true"){
     res.render('mybook',{
       title: "my book",
       line: getValoreAccesso(req)

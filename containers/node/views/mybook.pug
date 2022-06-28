@@ -35,7 +35,8 @@ nav.navbar.navbar-expand-lg.navbar-light.bg-light(style="font-family: 'Tahoma', 
               a#mybooks.acti.nav-link.px-2(href='/mybook' style='color: rgb(46, 50, 56)') MY BOOKS
       form.d-flex
 h1= line
-if line == false
+if line == "false"
+  h1= url
   a.login-with-google-btn(href=url type='button')
     | Sign in with Google
 else
