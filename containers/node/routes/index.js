@@ -51,6 +51,14 @@ router.get('/mybook', function(req, res) {
 
 router.get("/steps",async (req,res) =>{
   const queryURL = new urlParse(req.url);
+  console.log(queryURL);
+  console.log(queryURL.query);
+  if(queryURL.query==""){
+    res.render("steps",{
+      tile: 'mybook'
+    });
+  }
+  else{
   const code = queryParse.parse(queryURL.query).code;
   const oauth2Client = new google.auth.OAuth2(
       //client id
@@ -65,10 +73,10 @@ router.get("/steps",async (req,res) =>{
   res.cookie("un_biscotto_per_te",access_token);
   res.render('steps', { title: 'Express',
                         login: access_token });
+                      }
 });
 
 router.get("/to_read",function(req,res){
-    
   access_token_cookie = JSON.stringify(req.cookies.un_biscotto_per_te);
   access_token_cookie = access_token_cookie.split('"')[2].slice(0,-1);
   const queryURL = new urlParse(req.url);
