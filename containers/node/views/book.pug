@@ -42,14 +42,17 @@ html(lang='en')
           .col-8
             ul(style='list-style-type:none')
               li
-                form(action='/to_read' method='post')
-                  input#to_read.btn.btn-light(type='submit' value='TO READ')
+                form(action='/to_read' method='get')
+                  input#search(type='text' name='id' value=id[indice] style="display:none")
+                  input#to_read.btn.btn-light(type='submit' name=id value='TO READ')
               li
                 form(action='/favorite')
-                  input#to_read.btn.btn-light(type='submit' value='FAVORITES')
+                  input#search(type='text' name='id' value=id[indice] style="display:none")
+                  input#to_read.btn.btn-light(type='submit' name=id value='FAVORITES')
               li
                 form(action='/READ')
-                  input#to_read.btn.btn-light(type='submit' value='READ')
+                  input#search(type='text' name='id' value=id[indice] style="display:none")
+                  input#to_read.btn.btn-light(type='submit' name=id value='READ')
       else
         h1 sorry, no books!
 

@@ -8,7 +8,10 @@ const queryParse = require("query-string");
 const bodyParser = require("body-parser");
 const axios = require("axios");
 const cookieParser = require('cookie-parser');
-
+const ejs = require("ejs");
+const session = require('express-session');
+const passport = require("passport");
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
 /* GET home page. */
 router.get('/', function(req, res) {
   res.render('index', { title: 'Express' });
@@ -39,7 +42,7 @@ router.get('/mybook', function(req, res) {
   request(url,(err,response,body) => {
       console.log("error: ",err);
       console.log("statusCode: ", response && response.statusCode);
-      res.render('mylibrary',{
+      res.render('mybook',{
         tile: 'oauth',
         url: url
       });
@@ -60,37 +63,19 @@ router.get("/steps",async (req,res) =>{
   const tokens = await oauth2Client.getToken(code);
   access_token = JSON.stringify(tokens.tokens.access_token);
   res.cookie("un_biscotto_per_te",access_token);
-  res.render('index', { title: 'Express' });
+  res.render('steps', { title: 'Express',
+                        login: access_token });
 });
-router.get("/mylibrary",function(req,res){
+
+router.get("/to_read",function(req,res){
     
   access_token_cookie = JSON.stringify(req.cookies.un_biscotto_per_te);
   access_token_cookie = access_token_cookie.split('"')[2].slice(0,-1);
-
+  const queryURL = new urlParse(req.url);
+  const id = queryParse.parse(queryURL.query).id;
   if(access_token_cookie){
     var options = {
-      url: "https://www.googleapis.com/books/v1/mylibrary/bookshelves?key=AIzaSyCgkSMk35arxIz9xmZ9GPwTAAUxvuVYzzs",
-      headers:{
-          Authorization : "Bearer " + access_token_cookie,
-          'content-type':'application/json',
-        },
-    };
-    
-    request.get(options,function(error,response,body){
-        console.log(access_token_cookie);
-        console.log(body);
-        res.render("steps", { title: 'mybook' });
-    });
-  }
-});
-router.post("/to_read",function(req,res){
-    
-  access_token_cookie = JSON.stringify(req.cookies.un_biscotto_per_te);
-  access_token_cookie = access_token_cookie.split('"')[2].slice(0,-1);
-
-  if(access_token_cookie){
-    var options = {
-      url: "https://www.googleapis.com/books/v1/mylibrary/bookshelves/0/addVolume?volumeId=NRWlitmahXkC&key=AIzaSyCgkSMk35arxIz9xmZ9GPwTAAUxvuVYzzs",
+      url: "https://www.googleapis.com/books/v1/mylibrary/bookshelves/2/addVolume?volumeId="+id+"&key=AIzaSyCgkSMk35arxIz9xmZ9GPwTAAUxvuVYzzs",
       headers:{
           Authorization : "Bearer " + access_token_cookie,
           'content-type':'application/json',
@@ -114,23 +99,32 @@ router.get('/book', function(req, res) {
 function callback(error,response,body){
     if (!error && response.statusCode == 200){
         var info = JSON.parse(body);
+        console.log(info);
         var libri = new Array(info.items.length);
         var src_images = new Array(info.items.length);
         var indici = new Array(info.items.length);
+        var id_libri = new Array(info.items.length);
         for(var i = 0;i < info.items.length;i++){
           indici[i] = i;
           libri[i] = info.items[i].volumeInfo.title;
+          id_libri[i] = info.items[i].id;
           if(info.items[i].volumeInfo.imageLinks!= undefined)
                 src_images[i] = (info.items[i].volumeInfo.imageLinks.smallThumbnail);
                 else
                 src_images[i] = ("./images/logo_libro.png");
       }
-        res.render('book', { title: 'book', libri:libri, sorgenti: src_images, indici: indici});
+        res.render('book', { 
+          title: 'book',
+          libri:libri,
+          sorgenti: src_images,
+          indici: indici,
+          id: id_libri  
+        });
     }
 }
 
 request.get(options,callback);
   });
 
-
+ 
 module.exports = router;
