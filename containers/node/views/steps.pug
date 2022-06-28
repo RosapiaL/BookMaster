@@ -34,6 +34,5 @@ nav.navbar.navbar-expand-lg.navbar-light.bg-light(style="font-family: 'Tahoma', 
             li
               a#mybooks.acti.nav-link.px-2(href='/mybook' style='color: rgb(46, 50, 56)') MY BOOKS
       form.d-flex
-if !login
-  a.login-with-google-btn(href='/mybook' type='button')
-    | Accedi per poter vedere la propria libreria
+a.login-with-google-btn(href='/mybook' type='button')
+  | Accedi per poter vedere la propria libreria

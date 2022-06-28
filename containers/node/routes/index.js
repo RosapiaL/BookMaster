@@ -12,8 +12,16 @@ const ejs = require("ejs");
 const session = require('express-session');
 const passport = require("passport");
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
+
+function getValoreAccesso(req){
+  access_token = JSON.stringify(req.cookies.accesso);
+  if(access_token == "true") return "true";
+  else return "false";
+}
+
 /* GET home page. */
 router.get('/', function(req, res) {
+  res.cookie("accesso","false");
   res.render('index', { title: 'Express' });
 });
 
@@ -22,31 +30,41 @@ router.get('/search', function(req, res) {
 });
 
 router.get('/mybook', function(req, res) {
-  const oauth2Client = new google.auth.OAuth2(
-      //client id
-      "620651589897-nj3i7d6lseqnmonr21gkkuvh6ntcbmjc.apps.googleusercontent.com",
-      //client secret
-      "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",
-      //link to redirect
-      "http://localhost:3000/steps"
-  )
-  const scopes = ["https://www.googleapis.com/auth/books"];
-  const url = oauth2Client.generateAuthUrl({
-      access_type:"offline",
-      scope: scopes,
-      state:JSON.stringify({
-          callbackUrl: req.body.callbackUrl,
-          userID: req.body.userid
-      })
-  });
-  request(url,(err,response,body) => {
-      console.log("error: ",err);
-      console.log("statusCode: ", response && response.statusCode);
-      res.render('mybook',{
-        tile: 'oauth',
-        url: url
-      });
+  if(getValoreAccesso(req)){
+    res.render('mybook',{
+      title: "my book",
+      line: getValoreAccesso(req)
     });
+
+  }
+  else{
+    const oauth2Client = new google.auth.OAuth2(
+        //client id
+        "620651589897-nj3i7d6lseqnmonr21gkkuvh6ntcbmjc.apps.googleusercontent.com",
+        //client secret
+        "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",
+        //link to redirect
+        "http://localhost:3000/steps"
+    )
+    const scopes = ["https://www.googleapis.com/auth/books"];
+    const url = oauth2Client.generateAuthUrl({
+        access_type:"offline",
+        scope: scopes,
+        state:JSON.stringify({
+            callbackUrl: req.body.callbackUrl,
+            userID: req.body.userid
+        })
+    });
+    request(url,(err,response,body) => {
+        console.log("error: ",err);
+        console.log("statusCode: ", response && response.statusCode);
+        res.render('mybook',{
+          line: getValoreAccesso(req),
+          tile: 'oauth',
+          url: url
+        });
+      });
+    }
   });
 
 router.get("/steps",async (req,res) =>{
@@ -71,8 +89,9 @@ router.get("/steps",async (req,res) =>{
   const tokens = await oauth2Client.getToken(code);
   access_token = JSON.stringify(tokens.tokens.access_token);
   res.cookie("un_biscotto_per_te",access_token);
+  res.cookie("accesso","true");
   res.render('steps', { title: 'Express',
-                        login: access_token });
+                        login: getValoreAccesso(req) });
                       }
 });
 
