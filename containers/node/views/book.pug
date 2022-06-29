@@ -45,16 +45,16 @@ html(lang='en')
               li
                 form(action='/to_read' method='get')
                   input#search(type='text' name='id' value=id[indice] style="display:none")
-                  input#button.btn.btn-warning(type='submit' name=id value='TO READ')
+                  input#button.btn.btn-light(type='submit' name=id value='TO READ' style="width:100px")
               li
                 form(action='/favorite' method='get')
                   input#search(type='text' name='id' value=id[indice] style="display:none")
-                  input#button.btn.btn-warning(type='submit' name=id value='FAVORITES')
+                  input#button.btn.btn-light(type='submit' name=id value='FAVORITES' style="width:100px")
               li
                 form(action='/read' method='get')
                   input#search(type='text' name='id' value=id[indice] style="display:none")
-                  input#button.btn.btn-warning(type='submit' name=id value='READ')
-          a(href=links[indice])
+                  input#button.btn.btn-light(type='submit' name=id value='READ' style="width:100px")
+          a(href=links[indice] style="color:white")
             | Ottieni informazioni
       else
         h1 sorry, no books!
