@@ -44,15 +44,15 @@ html(lang='en')
               li
                 form(action='/to_read' method='get')
                   input#search(type='text' name='id' value=id[indice] style="display:none")
-                  input#to_read.btn.btn-light(type='submit' name=id value='TO READ')
+                  input#button.btn.btn-warning(type='submit' name=id value='TO READ')
               li
-                form(action='/favorite')
+                form(action='/favorite' method='get')
                   input#search(type='text' name='id' value=id[indice] style="display:none")
-                  input#to_read.btn.btn-light(type='submit' name=id value='FAVORITES')
+                  input#button.btn.btn-warning(type='submit' name=id value='FAVORITES')
               li
-                form(action='/READ')
+                form(action='/read' method='get')
                   input#search(type='text' name='id' value=id[indice] style="display:none")
-                  input#to_read.btn.btn-light(type='submit' name=id value='READ')
+                  input#button.btn.btn-warning(type='submit' name=id value='READ')
       else
         h1 sorry, no books!
 

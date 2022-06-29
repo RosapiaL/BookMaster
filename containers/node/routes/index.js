@@ -13,31 +13,51 @@ const session = require('express-session');
 const passport = require("passport");
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
-function getValoreAccesso(req){
-  access_token = JSON.stringify(req.cookies.accesso);
-  if(access_token == "true") return "true";
-  else return "false";
-}
 
 /* GET home page. */
 router.get('/', function(req, res) {
-  res.cookie("accesso","false");
+  console.log(JSON.stringify(req.cookies.accesso));
   res.render('index', { title: 'Express' });
 });
 
 router.get('/search', function(req, res) {
+  console.log(JSON.stringify(req.cookies.accesso));
   res.render('search', { title: 'Search' });
 });
 
 router.get('/mybook', function(req, res) {
-  if(getValoreAccesso(req)=="true"){
-    res.render('mybook',{
-      title: "my book",
-      line: getValoreAccesso(req)
-    });
-
-  }
-  else{
+    console.log(JSON.stringify(req.cookies.accesso));
+    if(JSON.stringify(req.cookies.accesso)== '"true"'){
+      console.log('sto cercando di stampare delle cose');
+      access_token_cookie = req.cookies.un_biscotto_per_te;
+      var options_to_read = {
+        url:'https://www.googleapis.com/books/v1/mylibrary/bookshelves/2/volumes?key=AIzaSyCgkSMk35arxIz9xmZ9GPwTAAUxvuVYzzs',
+        headers:{
+          Authorization : "Bearer " + access_token_cookie,
+        }
+      }
+      var options_favorites = {
+        url:'https://www.googleapis.com/books/v1/mylibrary/bookshelves/0/volumes?key=AIzaSyCgkSMk35arxIz9xmZ9GPwTAAUxvuVYzzs',
+        headers:{
+          Authorization : "Bearer " + access_token_cookie,
+        }
+      }
+      var options_read = {
+        url:'https://www.googleapis.com/books/v1/mylibrary/bookshelves/4/volumes?key=AIzaSyCgkSMk35arxIz9xmZ9GPwTAAUxvuVYzzs',
+        headers:{
+          Authorization : "Bearer " + access_token_cookie,
+        }
+      }
+      function callback(error,response,body){
+        if (!error && response.statusCode == 200){
+          var info = JSON.parse(body);
+          console.log(info);
+      }
+    }
+    request.get(options_to_read,callback);
+    request.get(options_favorites,callback);
+    request.get(options_read,callback);
+    }
     const oauth2Client = new google.auth.OAuth2(
         //client id
         "620651589897-nj3i7d6lseqnmonr21gkkuvh6ntcbmjc.apps.googleusercontent.com",
@@ -59,24 +79,16 @@ router.get('/mybook', function(req, res) {
         console.log("error: ",err);
         console.log("statusCode: ", response && response.statusCode);
         res.render('mybook',{
-          line: getValoreAccesso(req),
           tile: 'oauth',
-          url: url
+          url: url,
+          line:JSON.stringify(req.cookies.accesso)
         });
       });
-    }
   });
 
 router.get("/steps",async (req,res) =>{
+  console.log(JSON.stringify(req.cookies.accesso));
   const queryURL = new urlParse(req.url);
-  console.log(queryURL);
-  console.log(queryURL.query);
-  if(queryURL.query==""){
-    res.render("steps",{
-      tile: 'mybook'
-    });
-  }
-  else{
   const code = queryParse.parse(queryURL.query).code;
   const oauth2Client = new google.auth.OAuth2(
       //client id
@@ -90,32 +102,93 @@ router.get("/steps",async (req,res) =>{
   access_token = JSON.stringify(tokens.tokens.access_token);
   res.cookie("un_biscotto_per_te",access_token);
   res.cookie("accesso","true");
-  res.render('steps', { title: 'Express',
-                        login: getValoreAccesso(req) });
-                      }
+  res.render('steps', { 
+    title: 'Express',
+    line: JSON.stringify(req.cookies.accesso)
+    });
+
 });
 
 router.get("/to_read",function(req,res){
-  access_token_cookie = JSON.stringify(req.cookies.un_biscotto_per_te);
-  access_token_cookie = access_token_cookie.split('"')[2].slice(0,-1);
-  const queryURL = new urlParse(req.url);
-  const id = queryParse.parse(queryURL.query).id;
-  if(access_token_cookie){
-    var options = {
-      url: "https://www.googleapis.com/books/v1/mylibrary/bookshelves/2/addVolume?volumeId="+id+"&key=AIzaSyCgkSMk35arxIz9xmZ9GPwTAAUxvuVYzzs",
-      headers:{
-          Authorization : "Bearer " + access_token_cookie,
-          'content-type':'application/json',
-          'Content-length': 'CONTENT-LENGTH'
-        }
-    };
-    
-    request.post(options,function(error,response,body){
-        console.log(access_token_cookie);
-        console.log(body);
-        res.render("steps", { title: 'mybook' });
-    });
+  if(req.cookies.un_biscotto_per_te!=undefined){
+    access_token_cookie = JSON.stringify(req.cookies.un_biscotto_per_te);
+    access_token_cookie = access_token_cookie.split('"')[2].slice(0,-1);
+    const queryURL = new urlParse(req.url);
+    const id = queryParse.parse(queryURL.query).id;
+    if(access_token_cookie){
+      var options = {
+        url: "https://www.googleapis.com/books/v1/mylibrary/bookshelves/2/addVolume?volumeId="+id+"&key=AIzaSyCgkSMk35arxIz9xmZ9GPwTAAUxvuVYzzs",
+        headers:{
+            Authorization : "Bearer " + access_token_cookie,
+            'content-type':'application/json',
+            'Content-length': 'CONTENT-LENGTH'
+          }
+      };
+      
+      request.post(options,function(error,response,body){
+          console.log(access_token_cookie);
+          console.log(body);
+          res.render("mybook", { title: 'mybook', line: JSON.stringify(req.cookies.accesso)});
+      });
+    }
   }
+  else{
+    res.render("steps",{ title: 'mybook',line: JSON.stringify(req.cookies.accesso) })
+  }
+});
+router.get("/favorite",function(req,res){
+  if(req.cookies.un_biscotto_per_te!=undefined){
+    access_token_cookie = JSON.stringify(req.cookies.un_biscotto_per_te);
+    access_token_cookie = access_token_cookie.split('"')[2].slice(0,-1);
+    const queryURL = new urlParse(req.url);
+    const id = queryParse.parse(queryURL.query).id;
+    if(access_token_cookie){
+      var options = {
+        url: "https://www.googleapis.com/books/v1/mylibrary/bookshelves/0/addVolume?volumeId="+id+"&key=AIzaSyCgkSMk35arxIz9xmZ9GPwTAAUxvuVYzzs",
+        headers:{
+            Authorization : "Bearer " + access_token_cookie,
+            'content-type':'application/json',
+            'Content-length': 'CONTENT-LENGTH'
+          }
+      };
+      
+      request.post(options,function(error,response,body){
+          console.log(access_token_cookie);
+          console.log(body);
+          res.render("mybook", { title: 'mybook',line: JSON.stringify(req.cookies.accesso) });
+      });
+    }
+  }
+  else{
+    res.render("steps",{ title: 'mybook',line: JSON.stringify(req.cookies.accesso) })
+  }
+});
+router.get("/read",function(req,res){
+  if(req.cookies.un_biscotto_per_te!=undefined){
+    access_token_cookie = JSON.stringify(req.cookies.un_biscotto_per_te);
+    access_token_cookie = access_token_cookie.split('"')[2].slice(0,-1);
+    const queryURL = new urlParse(req.url);
+    const id = queryParse.parse(queryURL.query).id;
+    if(access_token_cookie){
+      var options = {
+        url: "https://www.googleapis.com/books/v1/mylibrary/bookshelves/4/addVolume?volumeId="+id+"&key=AIzaSyCgkSMk35arxIz9xmZ9GPwTAAUxvuVYzzs",
+        headers:{
+            Authorization : "Bearer " + access_token_cookie,
+            'content-type':'application/json',
+            'Content-length': 'CONTENT-LENGTH'
+          }
+      };
+      
+      request.post(options,function(error,response,body){
+          console.log(access_token_cookie);
+          console.log(body);
+          res.render("mybook", { title: 'mybook',line: JSON.stringify(req.cookies.accesso) });
+      });
+    }
+}
+else{
+  res.render("steps",{ title: 'mybook',line: JSON.stringify(req.cookies.accesso) })
+}
 });
 router.get('/book', function(req, res) {
   const queryURL = new urlParse(req.url);
