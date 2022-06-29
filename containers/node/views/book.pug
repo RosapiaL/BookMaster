@@ -37,6 +37,7 @@ html(lang='en')
     ul
       for indice in indici
         #informazioni.row
+          h3= libri[indice]
           .col-3
             img(src= sorgenti[indice])
           .col-8
@@ -53,6 +54,8 @@ html(lang='en')
                 form(action='/read' method='get')
                   input#search(type='text' name='id' value=id[indice] style="display:none")
                   input#button.btn.btn-warning(type='submit' name=id value='READ')
+          a(href=links[indice])
+            | Ottieni informazioni
       else
         h1 sorry, no books!
 

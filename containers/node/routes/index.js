@@ -204,10 +204,13 @@ function callback(error,response,body){
         var src_images = new Array(info.items.length);
         var indici = new Array(info.items.length);
         var id_libri = new Array(info.items.length);
+        var info_links = new Array(info.items.length);
         for(var i = 0;i < info.items.length;i++){
           indici[i] = i;
           libri[i] = info.items[i].volumeInfo.title;
           id_libri[i] = info.items[i].id;
+          info_links[i] = info.items[i].volumeInfo.infoLink;
+          console.log(info.items[i].volumeInfo.infoLink);
           if(info.items[i].volumeInfo.imageLinks!= undefined)
                 src_images[i] = (info.items[i].volumeInfo.imageLinks.smallThumbnail);
                 else
@@ -218,13 +221,12 @@ function callback(error,response,body){
           libri:libri,
           sorgenti: src_images,
           indici: indici,
-          id: id_libri  
+          id: id_libri,
+          links: info_links
         });
     }
 }
 
 request.get(options,callback);
   });
-
- 
 module.exports = router;
