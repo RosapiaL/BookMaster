@@ -16,7 +16,7 @@ html(lang='en')
     nav.navbar.navbar-expand-lg.navbar-light.bg-light(style="font-family: 'Tahoma', 'Trebuchet MS' ")
       .container-fluid
         a.logo.d-flex.align-items-center.mb-2.mb-lg-0.text-white.text-decoration-none(href='/')
-          img(src='./images/logo.png' style='width:40px;')
+          img(src='./images/logo.png' style='width:50px;')
         button.navbar-toggler(type='button' data-bs-toggle='collapse' data-bs-target='#navbarSupportedContent' aria-controls='navbarSupportedContent' aria-expanded='false' aria-label='Toggle navigation')
           span.navbar-toggler-icon
         #navbarSupportedContent.collapse.navbar-collapse
@@ -28,9 +28,13 @@ html(lang='en')
             li.nav-item
               ul.nav.col-12.col-lg-auto.me-lg-auto.mb-2.justify-content-center.mb-md-0(style='padding-top:10px; padding-left:10px')
                 li
-                  a#search.acti.nav-link.px-2(href='/search' style='color: rgb(46, 50, 56)') SEARCH
+                  a#search.acti.nav-link.px-2(href='/search' style='color: rgb(46, 50, 56);') SEARCH
             li.nav-item
               ul.nav.col-12.col-lg-auto.me-lg-auto.mb-2.justify-content-center.mb-md-0(style='padding-top:10px; padding-left:10px')
                 li
                   a#mybooks.acti.nav-link.px-2(href='/mybook' style='color: rgb(46, 50, 56)') MY BOOKS
           form.d-flex
+    .container(style='text-align:center;height:30px;')
+        h1.titolo.animated.bounceInDown Benvenuto su Book Master  
+          h2.titolo.animated.bounceInDown(style='color: white' ) la tua libreria online.
+          br

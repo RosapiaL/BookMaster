@@ -14,12 +14,28 @@ body{
 }
 h1{
     position:static;
-    padding-top: 250px;
+    padding-top: 100px;
     align-items: center;
     font-family: 'Tahoma', 'Trebuchet MS';
     color: white;
     text-shadow: 1px 1px 2px #000000;
 }
+h2{
+    position:static;
+    align-items: center;
+    font-family: 'Tahoma', 'Trebuchet MS';
+    color: white;
+    text-shadow: 1px 1px 2px #000000;
+}
+h3{
+    position:static;
+    align-items: left;
+    padding-left: 5%;
+    padding-top: 150px;
+    font-family: 'Times New Roman', 'Trebuchet MS';
+    color: white;
+}
+
 .login-with-google-btn {
     transition: background-color .3s, box-shadow .3s;
     position: absolute;

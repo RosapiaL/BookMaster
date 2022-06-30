@@ -61,6 +61,15 @@ services:
       - MONGO_INITDB_DATABASE=BookMaster
     networks:
       - db
+  rabbit:
+    image: rabbitmq:3-management
+    container_name: rabbit
+    ports:
+      - 8080:15672
+      - 8081:5672
+    networks:
+      - rab1
+      - rab2
 networks:
   app:
   db:
