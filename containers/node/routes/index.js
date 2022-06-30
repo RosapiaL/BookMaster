@@ -30,6 +30,7 @@ router.get('/mybook', function(req, res) {
     if(JSON.stringify(req.cookies.accesso)== '"true"'){
       console.log('sto cercando di stampare delle cose');
       access_token_cookie = req.cookies.un_biscotto_per_te;
+      console.log(access_token_cookie);
       var options_to_read = {
         url:'https://www.googleapis.com/books/v1/mylibrary/bookshelves/2/volumes?key=AIzaSyCgkSMk35arxIz9xmZ9GPwTAAUxvuVYzzs',
         headers:{
@@ -66,7 +67,7 @@ router.get('/mybook', function(req, res) {
         //link to redirect
         "http://localhost:3000/steps"
     )
-    const scopes = ["profile","email"];
+    const scopes = ["https://www.googleapis.com/auth/books","https://www.googleapis.com/auth/userinfo.email","https://www.googleapis.com/auth/userinfo.profile"];
     const url = oauth2Client.generateAuthUrl({
         access_type:"offline",
         scope: scopes,
@@ -107,12 +108,16 @@ router.get("/steps",async (req,res) =>{
     if (!error && response.statusCode == 200){
       var info = JSON.parse(body);
       console.log(info);
+      console.log("ho finito la callback");
   }
 }
+console.log("sto settando il cookie biscotto");
 res.cookie("un_biscotto_per_te",access_token);
+console.log("sto settando il cookie accesso");
 res.cookie("accesso","true");
 request.get(options,callback);
-  res.render('steps', { 
+console.log("Ho fatto la get");
+res.render('steps', { 
     title: 'Express',
     line: JSON.stringify(req.cookies.accesso)
     });
