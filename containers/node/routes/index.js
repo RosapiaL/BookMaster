@@ -124,6 +124,16 @@ res.render('steps', {
 
 });
 
+router.get('/logout',function(req,res){
+  if(JSON.stringify(req.cookies.accesso)== '"true"'){
+    res.clearCookie("un_biscotto_per_te");
+    res.clearCookie("accesso");
+    res.redirect('/mybook');
+  }
+
+});
+
+
 router.get("/to_read",function(req,res){
   if(req.cookies.un_biscotto_per_te!=undefined){
     access_token_cookie = JSON.stringify(req.cookies.un_biscotto_per_te);
