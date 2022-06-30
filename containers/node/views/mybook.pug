@@ -43,13 +43,13 @@ if line== '"false"' || line== null
   a.login-with-google-btn(href=url type='button')
     | Sign in with Google
 else
-  form(method='get' action="")
-    label(for='scaffali') Scegli uno scaffale:
+  form(method='get' action="" style="text-align:center; margin-top:10px")
+    label(for='scaffali' style="color:white; margin-bottom:10px") Scegli uno scaffale:
     br
-    select#scaffali(name='scaffale')
+    select#scaffali.btn.btn-dropdown.dropdown-toggle(name='scaffale' style=" background-color:white; height:40px")
       option(value='da_leggere') Da Leggere
       option(value='preferiti') Preferiti
       option(value='letti') Letti
-    input(type='submit')
+    input(type='submit' style="margin-left:10px; height:40px")
 
   

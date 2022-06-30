@@ -30,6 +30,10 @@ router.get('/mybook', function(req, res) {
     if(JSON.stringify(req.cookies.accesso)== '"true"'){
       console.log('sto cercando di stampare delle cose');
       access_token_cookie = req.cookies.un_biscotto_per_te;
+      const queryURL = new urlParse(req.url);
+      var scaffale = queryParse.parse(queryURL.query).scaffale;
+      console.log("########################################################");
+      console.log(scaffale);
       console.log(access_token_cookie);
       var options_to_read = {
         url:'https://www.googleapis.com/books/v1/mylibrary/bookshelves/2/volumes?key=AIzaSyCgkSMk35arxIz9xmZ9GPwTAAUxvuVYzzs',
@@ -153,12 +157,12 @@ router.get("/to_read",function(req,res){
       request.post(options,function(error,response,body){
           console.log(access_token_cookie);
           console.log(body);
-          res.render("mybook", { title: 'mybook', line: JSON.stringify(req.cookies.accesso)});
+          res.redirect('/mybook');
       });
     }
   }
   else{
-    res.render("steps",{ title: 'mybook',line: JSON.stringify(req.cookies.accesso) })
+    res.redirect('/mybook');
   }
 });
 router.get("/favorite",function(req,res){
@@ -180,12 +184,12 @@ router.get("/favorite",function(req,res){
       request.post(options,function(error,response,body){
           console.log(access_token_cookie);
           console.log(body);
-          res.render("mybook", { title: 'mybook',line: JSON.stringify(req.cookies.accesso) });
+          res.redirect('/mybook');
       });
     }
   }
   else{
-    res.render("steps",{ title: 'mybook',line: JSON.stringify(req.cookies.accesso) })
+    res.redirect('/mybook');
   }
 });
 router.get("/read",function(req,res){
@@ -207,12 +211,12 @@ router.get("/read",function(req,res){
       request.post(options,function(error,response,body){
           console.log(access_token_cookie);
           console.log(body);
-          res.render("mybook", { title: 'mybook',line: JSON.stringify(req.cookies.accesso) });
+          res.redirect('/mybook');
       });
     }
 }
 else{
-  res.render("steps",{ title: 'mybook',line: JSON.stringify(req.cookies.accesso) })
+  res.redirect('/mybook');
 }
 });
 router.get('/book', function(req, res) {
