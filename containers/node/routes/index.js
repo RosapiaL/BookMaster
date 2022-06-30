@@ -66,7 +66,7 @@ router.get('/mybook', function(req, res) {
         //link to redirect
         "http://localhost:3000/steps"
     )
-    const scopes = ["https://www.googleapis.com/auth/books"];
+    const scopes = ["profile","email"];
     const url = oauth2Client.generateAuthUrl({
         access_type:"offline",
         scope: scopes,
@@ -100,8 +100,18 @@ router.get("/steps",async (req,res) =>{
   );
   const tokens = await oauth2Client.getToken(code);
   access_token = JSON.stringify(tokens.tokens.access_token);
-  res.cookie("un_biscotto_per_te",access_token);
-  res.cookie("accesso","true");
+  var options = {
+    url:"https://www.googleapis.com/oauth2/v1/userinfo?access_token="+access_token
+  }
+  function callback(error,response,body){
+    if (!error && response.statusCode == 200){
+      var info = JSON.parse(body);
+      console.log(info);
+  }
+}
+res.cookie("un_biscotto_per_te",access_token);
+res.cookie("accesso","true");
+request.get(options,callback);
   res.render('steps', { 
     title: 'Express',
     line: JSON.stringify(req.cookies.accesso)
