@@ -30,13 +30,9 @@ router.get('/mybook', function(req, res) {
     console.log(JSON.stringify(req.cookies.accesso));
     var test = JSON.stringify(req.cookies.accesso);
     if(test== '"true"'){
-      console.log('sto cercando di stampare delle cose');
       access_token_cookie = req.cookies.un_biscotto_per_te;
       const queryURL = new urlParse(req.url);
       var scaffale = queryParse.parse(queryURL.query).scaffale;
-      console.log("########################################################");
-      console.log(scaffale);
-      console.log(access_token_cookie);
       var options_to_read = {
         url:'https://www.googleapis.com/books/v1/mylibrary/bookshelves/2/volumes?key=AIzaSyCgkSMk35arxIz9xmZ9GPwTAAUxvuVYzzs',
         headers:{
@@ -59,9 +55,6 @@ router.get('/mybook', function(req, res) {
       function callback(error,response,body){
         if (!error && response.statusCode == 200){
           var info = JSON.parse(body);
-          console.log(info.totalItems);
-
-          console.log("A questo punto ho solo tanta voglia di piangere");
           res.render('mybook',{title:"la mia libreria",line: test,file:body});
 
       }
@@ -69,19 +62,15 @@ router.get('/mybook', function(req, res) {
 
     }
     scaffale = JSON.stringify(scaffale);
-    console.log(scaffale);
 
     switch(scaffale){
       case '"da_leggere"':
-        console.log("siamo dentro lo switch da leggere"); 
-        request.get(options_to_read,callback);
+         request.get(options_to_read,callback);
         break;
       case '"preferiti"':
-        console.log("siamo dentro lo switch preferiti ");
         request.get(options_favorites,callback);
         break;
       case '"letti"':
-        console.log("siamo dentro lo switch letti");
         request.get(options_read,callback);
         break;
       default:
@@ -322,26 +311,49 @@ router.get("/rimuovi",function(req,res){
     access_token_cookie = JSON.stringify(req.cookies.un_biscotto_per_te);
     access_token_cookie = access_token_cookie.split('"')[2].slice(0,-1);
     if(access_token_cookie){
-      var options = {
-        url: "https://www.googleapis.com/books/v1/mylibrary/bookshelves/2/removeVolume?volumeId="+id+"&key=AIzaSyCgkSMk35arxIz9xmZ9GPwTAAUxvuVYzzs",
-        headers:{
-            Authorization : "Bearer " + access_token_cookie,
-            'content-type':'application/json',
-            'Content-length': 'CONTENT-LENGTH'
-          }
-      };
-      request.post(options,function(error,response,body){
-        console.log(access_token_cookie);
-        console.log(body);
-        res.redirect('/mybook');
-    });
-  }
+      rimozione_asincrona(access_token_cookie,id,req,res);
+      res.redirect('/mybook');
+    }
   else{
     res.redirect('/mybook');
   }
 }});
 
+function richiesta_titolo(access_token, id,req,res){
+
+  var options = {
+    url: "https://www.googleapis.com/books/v1/volumes/"+id
+  };
+  request.get(options,function(error,response,body){
+    console.log(access_token);
+    console.log(body);
+
+    var titolo =  JSON.parse(body).volumeInfo.title;
+    console.log(titolo);
+    return titolo;
+  });
+
+}
+
+
 router.get('/inizia_a_leggere', function(req,res){
+  const queryURL = new urlParse(req.url);
+  var id = queryParse.parse(queryURL.query).identificativo;
+  var title = "";
+  var num_pagine = "";
+  var options = {
+    url:"https://www.googleapis.com/books/v1/volumes/"+id,
+}
+function callback(error,response,body){
+    if (!error && response.statusCode == 200){
+        var info = JSON.parse(body);
+        console.log(info);
+        title = info.volumeInfo.title;
+        num_pagine = info.volumeInfo.pageCount;
+        }
+      }
+  request.get(options,callback);
+  
   const oauth2Client = new OAuth2(
     "620651589897-nj3i7d6lseqnmonr21gkkuvh6ntcbmjc.apps.googleusercontent.com",
         //client secret
@@ -351,27 +363,30 @@ router.get('/inizia_a_leggere', function(req,res){
   oauth2Client.setCredentials({
     refresh_token: refresh_token,
   });
-  const giorni = 10;//giorni da leggere
+  var giorni = Math.floor(num_pagine/15);//giorni da da_legge
+  if(num_pagine%15) giorni ++;
+  var pagine_ultimo_giorno = num_pagine%15;
+
   const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
   const eventStartTime = new Date();
   eventStartTime.setDate(eventStartTime.getDay());
   const eventEndTime = new Date();
   eventEndTime.setDate(eventEndTime.getDay()+giorni);
-  eventEndTime.setMinutes(eventEndTime.getMinutes() + 45) ;
+  eventEndTime.setMinutes(eventEndTime.getMinutes() + 30);
   const event = {
-    summary: "titolo del libro", 
-    description: `leggi 15 pagine al giorno`,
-    colorId: 2,
+    summary: title, 
+    description: "Prenditi una piccola pausa e leggi 15 pagine di questo libro",
+    colorId: 4,
     start: {
       dateTime: eventStartTime,
-      timeZone: 'America/Denver',
+      timeZone: 'Europe/Rome',
     },
     end: {
       dateTime: eventEndTime,
-      timeZone: 'America/Denver',
+      timeZone: 'Europe/Rome',
     },
     'recurrence': [
-      'RRULE:FREQ=DAILY;COUNT=2'
+      'RRULE:FREQ=DAILY;COUNT='+giorni,
     ]
   };
   calendar.freebusy.query(
@@ -379,7 +394,7 @@ router.get('/inizia_a_leggere', function(req,res){
       resource: {
         timeMin: eventStartTime,
         timeMax: eventEndTime,
-        timeZone: 'America/Denver',
+        timeZone: 'Europe/Rome',
         items: [{ id: 'primary' }],
       },
     },
@@ -397,7 +412,10 @@ router.get('/inizia_a_leggere', function(req,res){
           // Check for errors and log them if they exist.
           if (err) return console.error('Error Creating Calender Event:', err)
           // Else log that the event was created.
-          return console.log('Calendar event successfully created.')
+          {
+            console.log('Calendar event successfully created.')
+            res.redirect("/mybook");
+          }
         }
       )
 
