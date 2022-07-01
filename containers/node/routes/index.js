@@ -12,7 +12,7 @@ const ejs = require("ejs");
 const session = require('express-session');
 const passport = require("passport");
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const calendar = google.calendar('v3');
+const { OAuth2 } = google.auth;
 
 
 /* GET home page. */
@@ -99,7 +99,7 @@ router.get('/mybook', function(req, res) {
         //link to redirect
         "http://localhost:3000/steps"
     )
-    const scopes = ["https://www.googleapis.com/auth/books","https://www.googleapis.com/auth/userinfo.email","https://www.googleapis.com/auth/userinfo.profile"];
+    const scopes = ["https://www.googleapis.com/auth/books","https://www.googleapis.com/auth/userinfo.email","https://www.googleapis.com/auth/userinfo.profile","https://www.googleapis.com/auth/calendar"];
     const url = oauth2Client.generateAuthUrl({
         access_type:"offline",
         scope: scopes,
@@ -132,7 +132,10 @@ router.get("/steps",async (req,res) =>{
       "http://localhost:3000/steps"
   );
   const tokens = await oauth2Client.getToken(code);
+  console.log(tokens);
   access_token = JSON.stringify(tokens.tokens.access_token);
+  refresh_token = tokens.tokens.refresh_token;
+  console.log(refresh_token);
   var options = {
     url:"https://www.googleapis.com/oauth2/v1/userinfo?access_token="+access_token
   }
@@ -143,6 +146,7 @@ router.get("/steps",async (req,res) =>{
       console.log("ho finito la callback");
   }
 }
+res.cookie("refresh",refresh_token);
 console.log("sto settando il cookie biscotto");
 res.cookie("un_biscotto_per_te",access_token);
 console.log("sto settando il cookie accesso");
@@ -249,9 +253,66 @@ else{
 });
 
 router.get('/inizia_a_leggere', function(req,res){
-  
+  const oauth2Client = new OAuth2(
+    "620651589897-nj3i7d6lseqnmonr21gkkuvh6ntcbmjc.apps.googleusercontent.com",
+        //client secret
+    "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"
+  );
+  refresh_token = req.cookies.refresh;
+  oauth2Client.setCredentials({
+    refresh_token: refresh_token,
+  });
+  const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
+  const eventStartTime = new Date();
+  eventStartTime.setDate(eventStartTime.getDay() + 2);
+  const eventEndTime = new Date();
+  eventEndTime.setDate(eventEndTime.getDay() + 4);
+  eventEndTime.setMinutes(eventEndTime.getMinutes() + 45) ;
+  const event = {
+    summary: `Meeting with David`,
+    location: `3595 California St, San Francisco, CA 94118`,
+    description: `Meet with David to talk about the new client project and how to integrate the calendar for booking.`,
+    colorId: 1,
+    start: {
+      dateTime: eventStartTime,
+      timeZone: 'America/Denver',
+    },
+    end: {
+      dateTime: eventEndTime,
+      timeZone: 'America/Denver',
+    },
+  };
+  calendar.freebusy.query(
+    {
+      resource: {
+        timeMin: eventStartTime,
+        timeMax: eventEndTime,
+        timeZone: 'America/Denver',
+        items: [{ id: 'primary' }],
+      },
+    },
+    (err, res) => {
+      // Check for errors in our query and log them if they exist.
+      if (err) return console.error('Free Busy Query Error: ', err)
+      const eventArr = res.data.calendars.primary.busy;
 
+    // Check if event array is empty which means we are not busy
+    if (eventArr.length === 0)
+      // If we are not busy create a new calendar event.
+      return calendar.events.insert(
+        { calendarId: 'primary', resource: event },
+        err => {
+          // Check for errors and log them if they exist.
+          if (err) return console.error('Error Creating Calender Event:', err)
+          // Else log that the event was created.
+          return console.log('Calendar event successfully created.')
+        }
+      )
 
+    // If event array is not empty log that we are busy.
+    return console.log(`Sorry I'm busy...`)
+  }
+)
 });
 
 
@@ -298,5 +359,7 @@ function callback(error,response,body){
 
 request.get(options,callback);
   });
+
+  
 module.exports = router;
 
