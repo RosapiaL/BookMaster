@@ -59,7 +59,6 @@ router.get('/mybook', function(req, res) {
       function callback(error,response,body){
         if (!error && response.statusCode == 200){
           var info = JSON.parse(body);
-          console.log(info.items[0].volumeInfo);
           console.log(info.totalItems);
 
           console.log("A questo punto ho solo tanta voglia di piangere");
