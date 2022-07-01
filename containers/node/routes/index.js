@@ -262,17 +262,17 @@ router.get('/inizia_a_leggere', function(req,res){
   oauth2Client.setCredentials({
     refresh_token: refresh_token,
   });
+  const giorni = 10;//giorni da leggere
   const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
   const eventStartTime = new Date();
-  eventStartTime.setDate(eventStartTime.getDay() + 2);
+  eventStartTime.setDate(eventStartTime.getDay());
   const eventEndTime = new Date();
-  eventEndTime.setDate(eventEndTime.getDay() + 4);
+  eventEndTime.setDate(eventEndTime.getDay()+giorni);
   eventEndTime.setMinutes(eventEndTime.getMinutes() + 45) ;
   const event = {
-    summary: `Meeting with David`,
-    location: `3595 California St, San Francisco, CA 94118`,
-    description: `Meet with David to talk about the new client project and how to integrate the calendar for booking.`,
-    colorId: 1,
+    summary: "titolo del libro", 
+    description: `leggi 15 pagine al giorno`,
+    colorId: 2,
     start: {
       dateTime: eventStartTime,
       timeZone: 'America/Denver',
@@ -281,6 +281,9 @@ router.get('/inizia_a_leggere', function(req,res){
       dateTime: eventEndTime,
       timeZone: 'America/Denver',
     },
+    'recurrence': [
+      'RRULE:FREQ=DAILY;COUNT=2'
+    ]
   };
   calendar.freebusy.query(
     {
