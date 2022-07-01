@@ -60,6 +60,7 @@ else
       title = file.items[i].volumeInfo.title;
       pagine = file.items[i].volumeInfo.pageCount;
       foto = file.items[i].volumeInfo.imageLinks.smallThumbnail;
+      id = file.items[i].id;
       document.write(`
       <div class="row" style="padding-top:200px;">
       <div class="col">
@@ -78,18 +79,18 @@ else
       </div>
       <div class="row">
       <div class="col">
-      <form action"/rimuovi" method="get">
-      <input type="hidden" name="titolo" value=`+title+`/>
-      <input type="hidden" name="num_pagine" value= `+pagine+`/>
+      <form action="/rimuovi" method="get">
+      <input type="hidden" name="identificativo" value= `+id+`/>
       <input type="submit" value="Rimuovi">
-      <form action"/inizia_a_leggere" method="get">
-      <input type="hidden" name="titolo" value=`+title+`/>
-      <input type="hidden" name="num_pagine" value= `+pagine+` />
+      </form>
+      <form action="/inizia_a_leggere" method="get">
+      <input type="hidden" name="identificativo" value= `+id+`/>
       <input type="submit" value="Inizia a leggere">
-      <form action"/letto" method="get">
-      <input type="hidden" name="titolo" value=`+title+` />
-      <input type="hidden" name="num_pagine" value= `+pagine+` />
+      </form>
+      <form action="/letto" method="get">
+      <input type="hidden" name="identificativo" value= `+id+`/>
       <input type="submit" value="Contrassegna come letto">
+      </form>
 
       </div>
       </div>
