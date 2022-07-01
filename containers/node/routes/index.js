@@ -15,7 +15,6 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const calendar = google.calendar('v3');
 
 
-
 /* GET home page. */
 router.get('/', function(req, res) {
   console.log(JSON.stringify(req.cookies.accesso));
