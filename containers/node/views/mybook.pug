@@ -78,9 +78,19 @@ else
       </div>
       <div class="row">
       <div class="col">
-      <button>Rimuovi</button>
-      <button>Inizia a Leggere</button>
-      <button>Contrassegna come letto</button>
+      <form action"/rimuovi" method="get">
+      <input type="hidden" name="titolo" value=`+title+`/>
+      <input type="hidden" name="num_pagine" value= `+pagine+`/>
+      <input type="submit" value="Rimuovi">
+      <form action"/inizia_a_leggere" method="get">
+      <input type="hidden" name="titolo" value=`+title+`/>
+      <input type="hidden" name="num_pagine" value= `+pagine+` />
+      <input type="submit" value="Inizia a leggere">
+      <form action"/letto" method="get">
+      <input type="hidden" name="titolo" value=`+title+` />
+      <input type="hidden" name="num_pagine" value= `+pagine+` />
+      <input type="submit" value="Contrassegna come letto">
+
       </div>
       </div>
       </div>

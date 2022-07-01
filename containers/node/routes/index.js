@@ -59,7 +59,6 @@ router.get('/mybook', function(req, res) {
       function callback(error,response,body){
         if (!error && response.statusCode == 200){
           var info = JSON.parse(body);
-          console.log(info.items[0].volumeInfo);
           console.log(info.totalItems);
 
           console.log("A questo punto ho solo tanta voglia di piangere");
@@ -164,6 +163,7 @@ router.get('/logout',function(req,res){
   if(JSON.stringify(req.cookies.accesso)== '"true"'){
     res.clearCookie("un_biscotto_per_te");
     res.clearCookie("accesso");
+    res.clearCookie("refesh_token");
     res.redirect('/mybook');
   }
 
@@ -197,6 +197,7 @@ router.get("/to_read",function(req,res){
     res.redirect('/mybook');
   }
 });
+
 router.get("/favorite",function(req,res){
   if(req.cookies.un_biscotto_per_te!=undefined){
     access_token_cookie = JSON.stringify(req.cookies.un_biscotto_per_te);
@@ -224,6 +225,7 @@ router.get("/favorite",function(req,res){
     res.redirect('/mybook');
   }
 });
+
 router.get("/read",function(req,res){
   if(req.cookies.un_biscotto_per_te!=undefined){
     access_token_cookie = JSON.stringify(req.cookies.un_biscotto_per_te);
@@ -250,6 +252,32 @@ router.get("/read",function(req,res){
 else{
   res.redirect('/mybook');
 }
+});
+router.get("/rimuovi",function(req,res){
+  if(req.cookies.un_biscotto_per_te!=undefined){
+    access_token_cookie = JSON.stringify(req.cookies.un_biscotto_per_te);
+    access_token_cookie = access_token_cookie.split('"')[2].slice(0,-1);
+    const queryURL = new urlParse(req.url);
+    const id = queryParse.parse(queryURL.query).id;
+    if(access_token_cookie){
+      var options = {
+        url:"https://www.googleapis.com/books/v1/mylibrary/bookshelves/2/removeVolume?volumeId="+id+"&key=AIzaSyCgkSMk35arxIz9xmZ9GPwTAAUxvuVYzzs",
+        headers:{
+            Authorization : "Bearer " + access_token_cookie,
+            'content-type':'application/json',
+            'Content-length': 'CONTENT-LENGTH'
+          }
+      };
+      request.post(options,function(error,response,body){
+          console.log(access_token_cookie);
+          console.log(body);
+          res.redirect('/mybook');
+      });
+    }
+  }
+  else{
+    res.redirect('/mybook');
+  }
 });
 
 router.get('/inizia_a_leggere', function(req,res){
