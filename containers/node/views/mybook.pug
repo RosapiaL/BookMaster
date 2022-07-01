@@ -5,12 +5,12 @@ head
   meta(name='viewport' content='width=device-width, initial-scale=1.0')
   link(rel='stylesheet' href='./stylesheets/bootstrap.min.css')
   link(rel='stylesheet' href='./stylesheets/stile.css')
-  script(src='./javascripts/bootstrap.bundle.js')
-  script(src='./javascripts/bootstrap.esm.js')
-  script(src='https://code.jquery.com/jquery-3.5.1.slim.min.js' integrity='sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj' crossorigin='anonymous')
-  script(src='https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js' integrity='sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx' crossorigin='anonymous')
+  script(type="module" src='./javascripts/bootstrap.bundle.js')
+  script(type="module" src='https://code.jquery.com/jquery-3.5.1.slim.min.js' integrity='sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj' crossorigin='anonymous')
+  script(type="module" src='https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js' integrity='sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx' crossorigin='anonymous')
   link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css')
-  script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js')
+  script(type="module" src='https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js')
+  script( type="module" src='./javascripts/renderbooks.js')
   title Book Master
 
 nav.navbar.navbar-expand-lg.navbar-light.bg-light(style="font-family: 'Tahoma', 'Trebuchet MS' ")
@@ -50,6 +50,52 @@ else
       option(value='da_leggere') Da Leggere
       option(value='preferiti') Preferiti
       option(value='letti') Letti
-    input(type='submit' style="margin-left:10px; height:40px")
+    input(type='submit' style=" z-index:10;margin-left:10px; height:40px")
+  script.
+    var file = !{file};
+    document.write(file.totalItems);
+    document.write("<br>");
+    document.write('<div class="container">');
+    for(var i=0;i<file.totalItems;i++){
+      title = file.items[i].volumeInfo.title;
+      pagine = file.items[i].volumeInfo.pageCount;
+      foto = file.items[i].volumeInfo.imageLinks.smallThumbnail;
+      document.write(`
+      <div class="row" style="padding-top:200px;">
+      <div class="col">
+      <img src="` + foto +`" style="position: relative;top: 25%;left: 36%;scale: 150%;">
+      </div>
+      <div class="col" style="text-align: center;">
+      <div class="row">
+      <div class="col">
+      <h1 style="position: relative;padding:20px">`+title+`</h1>
+      </div>
+      </div>
+      <div class="row">
+      <div class="col">
+      <p style="color:white; position: relative;">Numero di pagine `+pagine+`</p>
+      </div>
+      </div>
+      <div class="row">
+      <div class="col">
+      <button>Rimuovi</button>
+      <button>Inizia a Leggere</button>
+      <button>Contrassegna come letto</button>
+      </div>
+      </div>
+      </div>
+      </div>
+      `);
+      /*
+      numero_giorni =Math.floor(pagine/15);
+      resto = pagine % 15;
+      if(resto) numero_giorni ++;
+      document.write(numero_giorni);
+      document.write(resto);
+      */
+    }
+    document.write('</div>');
 
-  
+
+
+

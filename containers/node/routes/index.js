@@ -12,6 +12,8 @@ const ejs = require("ejs");
 const session = require('express-session');
 const passport = require("passport");
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const calendar = google.calendar('v3');
+
 
 
 /* GET home page. */
@@ -27,7 +29,8 @@ router.get('/search', function(req, res) {
 
 router.get('/mybook', function(req, res) {
     console.log(JSON.stringify(req.cookies.accesso));
-    if(JSON.stringify(req.cookies.accesso)== '"true"'){
+    var test = JSON.stringify(req.cookies.accesso);
+    if(test== '"true"'){
       console.log('sto cercando di stampare delle cose');
       access_token_cookie = req.cookies.un_biscotto_per_te;
       const queryURL = new urlParse(req.url);
@@ -53,15 +56,41 @@ router.get('/mybook', function(req, res) {
           Authorization : "Bearer " + access_token_cookie,
         }
       }
+
       function callback(error,response,body){
         if (!error && response.statusCode == 200){
           var info = JSON.parse(body);
-          console.log(info);
+          console.log(info.items[0].volumeInfo);
+          console.log(info.totalItems);
+
+          console.log("A questo punto ho solo tanta voglia di piangere");
+          res.render('mybook',{title:"la mia libreria",line: test,file:body});
+
       }
+
+
     }
-    request.get(options_to_read,callback);
-    request.get(options_favorites,callback);
-    request.get(options_read,callback);
+    scaffale = JSON.stringify(scaffale);
+    console.log(scaffale);
+
+    switch(scaffale){
+      case '"da_leggere"':
+        console.log("siamo dentro lo switch da leggere"); 
+        request.get(options_to_read,callback);
+        break;
+      case '"preferiti"':
+        console.log("siamo dentro lo switch preferiti ");
+        request.get(options_favorites,callback);
+        break;
+      case '"letti"':
+        console.log("siamo dentro lo switch letti");
+        request.get(options_read,callback);
+        break;
+      default:
+        console.log("Richiesta non valida");
+        break;
+    }
+
     }
     const oauth2Client = new google.auth.OAuth2(
         //client id
@@ -219,6 +248,16 @@ else{
   res.redirect('/mybook');
 }
 });
+
+router.get('/inizia_a_leggere', function(req,res){
+  
+
+
+});
+
+
+
+
 router.get('/book', function(req, res) {
   const queryURL = new urlParse(req.url);
   const search = queryParse.parse(queryURL.query).search;
@@ -244,7 +283,7 @@ function callback(error,response,body){
                 src_images[i] = (info.items[i].volumeInfo.imageLinks.smallThumbnail);
                 else
                 src_images[i] = ("./images/logo_libro.png");
-      }
+        }
         res.render('book', { 
           title: 'book',
           libri:libri,
@@ -256,6 +295,9 @@ function callback(error,response,body){
     }
 }
 
+
+
 request.get(options,callback);
   });
 module.exports = router;
+
