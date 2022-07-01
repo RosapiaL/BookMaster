@@ -350,79 +350,81 @@ function callback(error,response,body){
         console.log(info);
         title = info.volumeInfo.title;
         num_pagine = info.volumeInfo.pageCount;
+        const oauth2Client = new OAuth2(
+          "620651589897-nj3i7d6lseqnmonr21gkkuvh6ntcbmjc.apps.googleusercontent.com",
+              //client secret
+          "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"
+        );
+        refresh_token = req.cookies.refresh;
+        oauth2Client.setCredentials({
+          refresh_token: refresh_token,
+        });
+        var giorni = Math.floor(num_pagine/15);//giorni da da_legge
+        if(num_pagine%15) giorni ++;
+        var pagine_ultimo_giorno = num_pagine%15;
+      
+        const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
+        const eventStartTime = new Date();
+        eventStartTime.setDate(eventStartTime.getDay());
+        const eventEndTime = new Date();
+        eventEndTime.setDate(eventEndTime.getDay());
+        eventEndTime.setMinutes(eventEndTime.getMinutes() + 30);
+        const event = {
+          summary: title, 
+          description: "Prenditi una piccola pausa e leggi 15 pagine di questo libro",
+          colorId: 4,
+          start: {
+            dateTime: eventStartTime,
+            timeZone: 'America/Denver',
+          },
+          end: {
+            dateTime: eventEndTime,
+            timeZone: 'America/Denver',
+          },
+          'recurrence': [
+            'RRULE:FREQ=DAILY;COUNT='+giorni,
+          ]
+        };
+        calendar.freebusy.query(
+          {
+            resource: {
+              timeMin: eventStartTime,
+              timeMax: eventEndTime,
+              timeZone: 'America/Denver',
+              items: [{ id: 'primary' }],
+            },
+          },
+          (err, res) => {
+            // Check for errors in our query and log them if they exist.
+            if (err) return console.error('Free Busy Query Error: ', err)
+            const eventArr = res.data.calendars.primary.busy;
+      
+            console.log(eventArr);
+          // Check if event array is empty which means we are not busy
+          if (eventArr.length === 0)
+            // If we are not busy create a new calendar event.
+            return calendar.events.insert(
+              { calendarId: 'primary', resource: event },
+              err => {
+                // Check for errors and log them if they exist.
+                if (err) return console.error('Error Creating Calender Event:', err)
+                // Else log that the event was created.
+                {
+                  console.log('Calendar event successfully created.')
+                }
+              }
+              )
+              
+          // If event array is not empty log that we are busy.
+          return console.log(`Sorry I'm busy...`);
+        }
+      )
+      res.redirect("/mybook");
         }
       }
   request.get(options,callback);
   
-  const oauth2Client = new OAuth2(
-    "620651589897-nj3i7d6lseqnmonr21gkkuvh6ntcbmjc.apps.googleusercontent.com",
-        //client secret
-    "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"
-  );
-  refresh_token = req.cookies.refresh;
-  oauth2Client.setCredentials({
-    refresh_token: refresh_token,
-  });
-  var giorni = Math.floor(num_pagine/15);//giorni da da_legge
-  if(num_pagine%15) giorni ++;
-  var pagine_ultimo_giorno = num_pagine%15;
-
-  const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
-  const eventStartTime = new Date();
-  eventStartTime.setDate(eventStartTime.getDay());
-  const eventEndTime = new Date();
-  eventEndTime.setDate(eventEndTime.getDay()+giorni);
-  eventEndTime.setMinutes(eventEndTime.getMinutes() + 30);
-  const event = {
-    summary: title, 
-    description: "Prenditi una piccola pausa e leggi 15 pagine di questo libro",
-    colorId: 4,
-    start: {
-      dateTime: eventStartTime,
-      timeZone: 'Europe/Rome',
-    },
-    end: {
-      dateTime: eventEndTime,
-      timeZone: 'Europe/Rome',
-    },
-    'recurrence': [
-      'RRULE:FREQ=DAILY;COUNT='+giorni,
-    ]
-  };
-  calendar.freebusy.query(
-    {
-      resource: {
-        timeMin: eventStartTime,
-        timeMax: eventEndTime,
-        timeZone: 'Europe/Rome',
-        items: [{ id: 'primary' }],
-      },
-    },
-    (err, res) => {
-      // Check for errors in our query and log them if they exist.
-      if (err) return console.error('Free Busy Query Error: ', err)
-      const eventArr = res.data.calendars.primary.busy;
-
-    // Check if event array is empty which means we are not busy
-    if (eventArr.length === 0)
-      // If we are not busy create a new calendar event.
-      return calendar.events.insert(
-        { calendarId: 'primary', resource: event },
-        err => {
-          // Check for errors and log them if they exist.
-          if (err) return console.error('Error Creating Calender Event:', err)
-          // Else log that the event was created.
-          {
-            console.log('Calendar event successfully created.')
-            res.redirect("/mybook");
-          }
-        }
-      )
-
-    // If event array is not empty log that we are busy.
-    return console.log(`Sorry I'm busy...`)
-  }
-)
+  
 });
 
 
