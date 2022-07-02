@@ -73,3 +73,5 @@ services:
 networks:
   app:
   db:
+  rab1:
+  rab2:
