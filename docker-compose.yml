@@ -46,21 +46,15 @@ services:
     container_name: "node3"
     environment:
       - NAME_OF_NODE=node3
-    
-  mongodb:
-    image: mongo:latest
+  couchdb:
+    image: couchdb:latest
+    container_name: couchdb_bookmaster
     ports:
-      - 27017:27017
-    container_name: "my-mongo-container"
-    volumes:
-      - ./containers/mongo:/data/db
-      - ./containers/mongo/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+      - '5984:5984'
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=citizix
-      - MONGO_INITDB_ROOT_PASSWORD=S3cret
-      - MONGO_INITDB_DATABASE=BookMaster
-    networks:
-      - db
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=admin
+    restart: unless-stopped
   rabbit:
     image: rabbitmq:3-management
     container_name: rabbit
