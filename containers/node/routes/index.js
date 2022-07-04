@@ -149,7 +149,6 @@ router.get("/steps",async (req,res) =>{
       var info = JSON.parse(body);
       console.log(info.email);
       console.log("ho finito la callback");
-      return info.email;
   }
 }
 res.cookie("refresh",refresh_token);
