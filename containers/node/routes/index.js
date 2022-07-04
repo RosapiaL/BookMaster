@@ -20,6 +20,14 @@ router.get('/', function(req, res) {
   console.log(JSON.stringify(req.cookies.accesso));
   res.render('index', { title: 'Express' });
 });
+router.post('/recensione', function(req, res) {
+  console.log(req.body);
+  res.render('recensione', { title: 'recensione' });
+});
+router.get('/recensione', function(req, res) {
+  console.log(JSON.stringify(req.cookies.accesso));
+  res.render('recensione', { title: 'recensione' });
+});
 
 router.get('/search', function(req, res) {
   console.log(JSON.stringify(req.cookies.accesso));
