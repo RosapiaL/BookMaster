@@ -22,11 +22,20 @@ router.get('/', function(req, res) {
 });
 router.post('/recensione', function(req, res) {
   console.log(req.body);
-  res.render('recensione', { title: 'recensione' });
+  console.log(req.body.star);
+  console.log(req.body.review);
+  console.log(req.body.id);
+  res.render('mybook', { title: 'recensione' });
 });
 router.get('/recensione', function(req, res) {
   console.log(JSON.stringify(req.cookies.accesso));
-  res.render('recensione', { title: 'recensione' });
+  const queryURL = new urlParse(req.url);
+  var id = queryParse.parse(queryURL.query).identificativo;
+  console.log(id);
+  console.log(JSON.stringify(id));
+  res.render('recensione', { 
+    title: 'recensione',
+    identificativo:id});
 });
 
 router.get('/search', function(req, res) {
@@ -138,8 +147,9 @@ router.get("/steps",async (req,res) =>{
   function callback(error,response,body){
     if (!error && response.statusCode == 200){
       var info = JSON.parse(body);
-      console.log(info);
+      console.log(info.email);
       console.log("ho finito la callback");
+      return info.email;
   }
 }
 res.cookie("refresh",refresh_token);

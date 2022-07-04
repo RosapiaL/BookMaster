@@ -4,6 +4,7 @@ head
   title Star Rating Form | CodingNepal
   link(rel='stylesheet' href='./stylesheets/recensione.css')
   link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css')
+h2= identificativo
 .container
   .post
     .text Thanks for rating us!
@@ -24,6 +25,8 @@ head
       .textarea
         textarea(cols='30' name="review" placeholder='Describe your experience..')
         textarea#star(cols='30' name='star' placeholder='Describe your experience..' style='display: none;')
+        textarea(cols='30' name='id' style='display: none;')
+          |#{identificativo} 
       .btn
         button(type='submit') Post
 script(src='./javascripts/recensione.js')
