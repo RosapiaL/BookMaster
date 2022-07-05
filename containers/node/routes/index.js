@@ -14,19 +14,113 @@ const passport = require("passport");
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const { OAuth2 } = google.auth;
 
-
+router.get("/lista_recensioni",function(req, res){
+  const queryURL = new urlParse(req.url);
+  var id = queryParse.parse(queryURL.query).identificativo;
+  console.log(id);
+  console.log(JSON.stringify(id));
+  request({
+    url: 'http://admin:admin@127.0.0.1:5984/bookmaster/_all_docs', //URL to hit
+    //qs: {from: 'blog example', time: +new Date()}, //Query string data
+    method: 'GET',
+    //headers: {
+    //    'Content-Type': 'MyContentType',
+    //    'Custom-Header': 'Custom Value'
+    //},
+    //body: 'Hello Hello!' //Set the body as a string
+  }, function(error, response, body){
+    if(error) {
+        console.log(error);
+    } else {
+        var info = JSON.parse(body);
+        console.log(info);
+        var items = info.total_rows;
+        for(var i = 1;i <= items;i++){
+          i = i.toString();
+          request({
+            url: 'http://admin:admin@127.0.0.1:5984/bookmaster/'+i, //URL to hit
+            //qs: {from: 'blog example', time: +new Date()}, //Query string data
+            method: 'GET',
+            //headers: {
+            //    'Content-Type': 'MyContentType',
+            //    'Custom-Header': 'Custom Value'
+            //},
+            //body: 'Hello Hello!' //Set the body as a string
+        }, function(error, response, body){
+            if(error) {
+                console.log(error);
+            } else {
+              var info = JSON.parse(body);
+              if(id==info.identificativo)
+              console.log(info);
+            }
+        });
+        }
+      }
+  })
+});
 /* GET home page. */
 router.get('/', function(req, res) {
   console.log(JSON.stringify(req.cookies.accesso));
   res.render('index', { title: 'Express' });
 });
 router.post('/recensione', function(req, res) {
-  console.log(req.body);
-  console.log(req.body.star);
-  console.log(req.body.review);
-  console.log(req.body.id);
-  res.render('mybook', { title: 'recensione' });
-});
+  var star = req.body.star;
+  var review = req.body.review;
+  var identificativo = req.body.id;
+  var options = {
+    url:"https://www.googleapis.com/oauth2/v1/userinfo?access_token="+access_token
+  }
+  function callback(error,response,body){
+    if (!error && response.statusCode == 200){
+      var info = JSON.parse(body);
+      var email = JSON.stringify(info.email);
+      console.log(JSON.stringify(info.email));
+      console.log(JSON.stringify(star));
+      console.log(JSON.stringify(review));
+      console.log(JSON.stringify(identificativo));
+      console.log("ho finito la callback");
+      request({
+        url: 'http://admin:admin@127.0.0.1:5984/bookmaster/_all_docs', //URL to hit
+        //qs: {from: 'blog example', time: +new Date()}, //Query string data
+        method: 'GET',
+        //headers: {
+        //    'Content-Type': 'MyContentType',
+        //    'Custom-Header': 'Custom Value'
+        //},
+        //body: 'Hello Hello!' //Set the body as a string
+      }, function(error, response, body){
+        if(error) {
+            console.log(error);
+        } else {
+            var info = JSON.parse(body);
+            console.log(info);
+            console.log(typeof info.total_rows);
+            var id = info.total_rows + 1;
+            console.log(id);
+            id = id.toString();
+            request({
+              url: 'http://admin:admin@127.0.0.1:5984/bookmaster/'+id, //URL to hit
+              //qs: {from: 'blog example', time: +new Date()}, //Query string data
+              method: 'PUT',
+              headers: {
+                'content-type': 'application/json'
+              },
+              body: '{"star":'+JSON.stringify(star)+',"recensione":'+JSON.stringify(review) +',"email":'+email+',"identificativo":'+JSON.stringify(identificativo).replaceAll(' ', '')+'}'
+            }, function(error, response, body){
+              if(error) {
+                  console.log(error);
+              } else {
+                  console.log(response.statusCode, body);
+              }
+          });
+          res.redirect("/mybook");
+        }
+      });
+    }
+  }
+  request.get(options,callback);
+}); 
 router.get('/recensione', function(req, res) {
   console.log(JSON.stringify(req.cookies.accesso));
   const queryURL = new urlParse(req.url);
@@ -44,6 +138,7 @@ router.get('/search', function(req, res) {
 });
 
 router.get('/mybook', function(req, res) {
+    console.log(req.cookies.id_db);
     console.log(JSON.stringify(req.cookies.accesso));
     var test = JSON.stringify(req.cookies.accesso);
     if(test== '"true"'){
@@ -141,22 +236,13 @@ router.get("/steps",async (req,res) =>{
   access_token = JSON.stringify(tokens.tokens.access_token);
   refresh_token = tokens.tokens.refresh_token;
   console.log(refresh_token);
-  var options = {
-    url:"https://www.googleapis.com/oauth2/v1/userinfo?access_token="+access_token
-  }
-  function callback(error,response,body){
-    if (!error && response.statusCode == 200){
-      var info = JSON.parse(body);
-      console.log(info.email);
-      console.log("ho finito la callback");
-  }
-}
+  
 res.cookie("refresh",refresh_token);
 console.log("sto settando il cookie biscotto");
 res.cookie("un_biscotto_per_te",access_token);
 console.log("sto settando il cookie accesso");
 res.cookie("accesso","true");
-request.get(options,callback);
+
 console.log("Ho fatto la get");
 res.render('steps', { 
     title: 'Express',

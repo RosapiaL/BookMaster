@@ -46,7 +46,7 @@ services:
     container_name: "node3"
     environment:
       - NAME_OF_NODE=node3
-  couchdb:
+  couchserver:
     image: couchdb:latest
     container_name: couchdb_bookmaster
     ports:
@@ -54,16 +54,7 @@ services:
     environment:
       - COUCHDB_USER=admin
       - COUCHDB_PASSWORD=admin
-    restart: unless-stopped
-  rabbit:
-    image: rabbitmq:3-management
-    container_name: rabbit
-    ports:
-      - 8080:15672
-      - 8081:5672
-    networks:
-      - rab1
-      - rab2
+    restart: always
 networks:
   app:
   db:
