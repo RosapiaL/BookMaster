@@ -17,6 +17,9 @@ const { OAuth2 } = google.auth;
 router.get("/lista_recensioni",function(req, res){
   const queryURL = new urlParse(req.url);
   var id = queryParse.parse(queryURL.query).identificativo;
+  var star = req.body.star;
+  var review = req.body.review;
+  var identificativo = req.body.id;
   console.log(id);
   console.log(JSON.stringify(id));
   request({
@@ -51,13 +54,23 @@ router.get("/lista_recensioni",function(req, res){
                 console.log(error);
             } else {
               var info = JSON.parse(body);
+              var star = info.star;
+              var review = info.recensione;
+              var email = info.email;
+              
+              console.log(JSON.stringify(info.email));
+              console.log(JSON.stringify(star));
+              console.log(JSON.stringify(review));
+              console.log("STO PROVANDO");
               if(id==info.identificativo)
               console.log(info);
             }
+            res.render('lista_recensioni', { title: 'Lista', identificativo:id, email:email, star:star, review:review, items:items });
         });
         }
       }
   })
+  
 });
 /* GET home page. */
 router.get('/', function(req, res) {
