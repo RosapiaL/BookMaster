@@ -18,6 +18,12 @@ const altro = require('./altro');
 const sendmail = require('./rabbit');
 
 
+const userdb =process.env.DBUSER;
+const passdb =process.env.DBPASS;
+const clientID = process.env.CLIENTID;
+const clientSecret = process.env.CLIENTSECRET;
+
+
 router.get("/lista_recensioni",function(req, res){
   const queryURL = new urlParse(req.url);
   var id = queryParse.parse(queryURL.query).identificativo;
@@ -40,7 +46,7 @@ router.get("/lista_recensioni",function(req, res){
     var titolo_libro = info.volumeInfo.title;
 
     var options = {
-      url : 'http://admin:admin@couch:5984/'+id+'/_design/all/_view/all'
+      url : 'http://'+userdb+':'+passdb+'@couch:5984/'+id+'/_design/all/_view/all'
     }
     request.get(options,function callback(error,response,body){
       var info = JSON.parse(body);
@@ -164,9 +170,9 @@ router.get('/mybook', function(req, res) {
     }
     const oauth2Client = new google.auth.OAuth2(
         //client id
-        "620651589897-nj3i7d6lseqnmonr21gkkuvh6ntcbmjc.apps.googleusercontent.com",
+        clientID,
         //client secret
-        "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",
+        clientSecret,
         //link to redirect
         "http://localhost:3000/steps"
     )
@@ -196,9 +202,9 @@ router.get("/steps",async (req,res) =>{
   const code = queryParse.parse(queryURL.query).code;
   const oauth2Client = new google.auth.OAuth2(
       //client id
-      "620651589897-nj3i7d6lseqnmonr21gkkuvh6ntcbmjc.apps.googleusercontent.com",
+      clientID,
       //client secret
-      "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",
+      clientSecret,
       //link to redirect
       "http://localhost:3000/steps"
   );
@@ -430,9 +436,9 @@ function callback(error,response,body){
         title = info.volumeInfo.title;
         num_pagine = info.volumeInfo.pageCount;
         const oauth2Client = new OAuth2(
-          "620651589897-nj3i7d6lseqnmonr21gkkuvh6ntcbmjc.apps.googleusercontent.com",
+          clientID,
               //client secret
-          "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"
+          clientSecret
         );
         refresh_token = req.cookies.refresh;
         oauth2Client.setCredentials({
@@ -584,7 +590,7 @@ router.get('/api/getreview/byid',(req,res) =>{
 
 
     var ricerca ={
-      url: 'http://admin:admin@couch:5984/'+esadecimale+'/_design/all/_view/all'
+      url: 'http://'+userdb+':'+passdb+'@couch:5984/'+esadecimale+'/_design/all/_view/all'
     }
     request.get(ricerca,function callback(error,response,body){
       var info = JSON.parse(body);
@@ -632,7 +638,7 @@ router.get('/api/getreview/bytitle',(req,res) =>{
 
 
     var ricerca ={
-      url: 'http://admin:admin@couch:5984/'+esadecimale+'/_design/all/_view/all'
+      url: 'http://'+userdb+':'+passdb+'@couch:5984/'+esadecimale+'/_design/all/_view/all'
     }
     request.get(ricerca,function callback(error,response,body){
       var info = JSON.parse(body);

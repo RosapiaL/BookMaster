@@ -2,11 +2,15 @@ var amqp = require('amqplib/callback_api');
 var request = require("request");
 const urlParse = require("url-parse");
 
-var usernamedb = 'admin';
-var passworddb = 'admin';
+const usernamedb = process.env.DBUSER;
+const passworddb = process.env.DBPASS;
+
+const usernamerabbit = process.env.RABBITUSER;
+const passwordrabbit = process.env.RABBITPASS;
+
 
 function inviaMessaggio(email){
-amqp.connect('amqp://user:password@rabbit', function(error0, connection) {
+amqp.connect('amqp://'+usernamerabbit+':'+passwordrabbit+'@rabbit', function(error0, connection) {
     if (error0) {
         throw error0;
     }

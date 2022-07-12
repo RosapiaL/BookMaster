@@ -6,6 +6,9 @@ const session = require('express-session');
 const passport = require("passport");
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
+const clientID = process.env.CLIENTID;
+const clientSecret = process.env.CLIENTSECRET;
+
 router.use(session({ secret: 'cats', resave: false, saveUninitialized: true }));
 router.use(passport.initialize());
 router.use(passport.session());
@@ -29,8 +32,8 @@ passport.deserializeUser(function(user, done) {
 
 
   passport.use(new GoogleStrategy({
-      clientID: "620651589897-nj3i7d6lseqnmonr21gkkuvh6ntcbmjc.apps.googleusercontent.com",
-      clientSecret: "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",
+      clientID: clientID,
+      clientSecret: clientSecret,
       callbackURL: "http://localhost:3000/user/info",
       userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo"
     },

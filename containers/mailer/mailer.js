@@ -1,12 +1,18 @@
 const amqp = require('amqplib/callback_api');
 const nodemailer = require("nodemailer");
 
+const usermail = process.env.MAILUSER;
+const passmail = process.env.MAILPASS;
+
+const usernamerabbit = process.env.RABBITUSER;
+const passwordrabbit = process.env.RABBITPASS;
+
 
 let transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: 'rdcbookmaster@gmail.com',
-        pass: 'zxhr xxbq tbdw xidj'
+        user: usermail,
+        pass: passmail
     }
 });
  
@@ -31,7 +37,7 @@ function inviaEmail(destinatario){
 
 
 
-amqp.connect('amqp://user:password@rabbit', function(error0, connection) {
+amqp.connect('amqp://'+usernamerabbit+':'+passwordrabbit+'@rabbit', function(error0, connection) {
     if (error0) {
         throw error0;
     }

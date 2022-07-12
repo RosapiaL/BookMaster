@@ -28,8 +28,8 @@ services:
       - rabbit
     environment:
       - NAME_OF_NODE=node1
-      - COUCHDB_USER=admin
-      - COUCHDB_PASSWORD=admin
+    env_file:
+      - .env
   node2:
     build: ./containers/node
     ports:
@@ -41,8 +41,8 @@ services:
     container_name: "node2"
     environment:
       - NAME_OF_NODE=node2
-      - COUCHDB_USER=admin
-      - COUCHDB_PASSWORD=admin
+    env_file:
+      - .env
   node3:
     build: ./containers/node
     ports:
@@ -54,17 +54,16 @@ services:
     container_name: "node3"
     environment:
       - NAME_OF_NODE=node3
-      - COUCHDB_USER=admin
-      - COUCHDB_PASSWORD=admin
+    env_file:
+      - .env
   couchserver:
     build: "./containers/couchdb"
     restart: always
     container_name: "couch"
     ports:
       - 5984:5984
-    environment:
-      - COUCHDB_USER=admin
-      - COUCHDB_PASSWORD=admin
+    env_file:
+      - .env
     networks:
       - db
     volumes:
@@ -72,9 +71,8 @@ services:
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rabbit
-    environment:
-      - RABBITMQ_DEFAULT_PASS=password 
-      - RABBITMQ_DEFAULT_USER=user
+    env_file:
+      - .env
     ports:
       - 5672:5672
       - 15672:15672
@@ -87,6 +85,8 @@ services:
       - ./containers/mailer:/usr/app
     networks:
       - rabbit
+    env_file:
+      - .env
 
 networks:
   app:

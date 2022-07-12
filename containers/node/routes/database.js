@@ -8,8 +8,8 @@ const { response } = require("express");
 
 
 
-const username = "admin";
-const password = "admin";
+const username = process.env.DBUSER;
+const password = process.env.DBPASS;
 
 //id libro sarà il nome del nostro libro
 //testo, sarà il testo della nostra recensione 
