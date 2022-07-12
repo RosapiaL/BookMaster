@@ -18,7 +18,7 @@ const password = "admin";
 
 function creaDB(id_libro,testo,stars,utente){
     var options ={
-        url:'http://'+username+":"+password+"@127.0.0.1:5984/"+id_libro,
+        url:'http://'+username+":"+password+"@couch:5984/"+id_libro,
     }
     request.put(options, function callback(error,response,body){
         console.log("creando il db...");
@@ -29,7 +29,7 @@ function creaDB(id_libro,testo,stars,utente){
 
 function aggiungi_vista(id_libro,testo,stars,utente){
     var options={
-        url:'http://'+username+":"+password+"@127.0.0.1:5984/"+id_libro+'/_design/all',
+        url:'http://'+username+":"+password+"@couch:5984/"+id_libro+'/_design/all',
         json: true,
         body:
             {
@@ -50,7 +50,7 @@ function aggiungi_vista(id_libro,testo,stars,utente){
 
 async function controllaDB(id_libro,testo,stars,utente){
     var options={
-        url:'http://'+username+":"+password+"@127.0.0.1:5984/"+id_libro,
+        url:'http://'+username+":"+password+"@couch:5984/"+id_libro,
     }
     request.get(options, async function callback(error,response,body){
         var info = JSON.parse(body);
@@ -71,7 +71,7 @@ function aggiungi_recensione(id_libro,testo,stars,utente,numero_rec){
     console.log("il commento è il numero: " +numero_rec);
 
     var options ={
-        url:'http://'+username+":"+password+"@127.0.0.1:5984/"+id_libro+"/"+numero_rec,
+        url:'http://'+username+":"+password+"@couch:5984/"+id_libro+"/"+numero_rec,
         json: true,
         body:{
             "nome":utente,
@@ -82,13 +82,13 @@ function aggiungi_recensione(id_libro,testo,stars,utente,numero_rec){
         request.put(options,function callback(error,response,body){
             console.log("sto inserendo la recensione nel db");
             console.log(body);
-    })
+        })
 }
 
 
 function add_review(id_libro,testo,stars,utente){
     var options ={
-        url:'http://'+username+":"+password+"@127.0.0.1:5984/"+id_libro,
+        url:'http://'+username+":"+password+"@couch:5984/"+id_libro,
     }
     //controllo se il db esiste e se non esiste lo creo
     request.get(options, function callback(error,response,body){
@@ -110,7 +110,7 @@ function add_review(id_libro,testo,stars,utente){
 function getReviews(id_libro){
     console.log("ottengo le recensioni del  "+id_libro);
     var options = {
-        url:'http://'+username+":"+password+"@127.0.0.1:5984/"+id_libro+'/_design/all/_view/all',
+        url:'http://'+username+":"+password+"@couch:5984/"+id_libro+'/_design/all/_view/all',
     }    
     request.get(options,function callback(error,response,body){
         var info = JSON.parse(body);

@@ -3,10 +3,11 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon ./bin/www",
+    "start": "node ./bin/www",
     "devstart": "SET DEBUG=myapp:* nodemon ./bin/www"
   },
   "dependencies": {
+    "amqplib": "^0.10.0",
     "axios": "^0.27.2",
     "body-parser": "^1.20.0",
     "cookie-parser": "~1.4.4",

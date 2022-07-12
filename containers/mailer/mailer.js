@@ -1,6 +1,37 @@
-var amqp = require('amqplib/callback_api');
+const amqp = require('amqplib/callback_api');
+const nodemailer = require("nodemailer");
 
-amqp.connect('amqp://rabbit', function(error0, connection) {
+
+let transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'rdcbookmaster@gmail.com',
+        pass: 'zxhr xxbq tbdw xidj'
+    }
+});
+ 
+
+function inviaEmail(destinatario){
+    let message = {
+        from: 'BookMaster <sender@example.com>',
+        to: '<'+destinatario+'>',
+        subject: 'Benvenuto su BookMaster',
+        text: 'Hello to myself!',
+        html: '<h1>Benvenuto su BookMaster</h1><br><p1>BookMaster è la tua libreria digitale</p1>'
+    };
+
+    transporter.sendMail(message, (err, info) => {
+        if (err) {
+            console.log('Error occurred. ' + err.message);
+        }
+    
+        console.log('Message sent: %s', info.messageId);
+    });
+}
+
+
+
+amqp.connect('amqp://user:password@rabbit', function(error0, connection) {
     if (error0) {
         throw error0;
     }
@@ -9,7 +40,7 @@ amqp.connect('amqp://rabbit', function(error0, connection) {
             throw error1;
         }
 
-        var queue = 'hello';
+        var queue = 'mail';
 
         channel.assertQueue(queue, {
             durable: true
@@ -18,7 +49,13 @@ amqp.connect('amqp://rabbit', function(error0, connection) {
         console.log(" [*] Waiting for messages in %s. To exit press CTRL+C", queue);
 
         channel.consume(queue, function(msg) {
+            try{
+                inviaEmail(msg.content.toString());
+            }catch(e){
+                console.log(e);
+            }
             console.log(" [x] Received %s", msg.content.toString());
+
         }, {
             noAck: true
         });

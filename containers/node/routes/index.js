@@ -15,6 +15,7 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const { OAuth2 } = google.auth;
 const db = require('./database');
 const altro = require('./altro');
+const sendmail = require('./rabbit');
 
 
 router.get("/lista_recensioni",function(req, res){
@@ -39,17 +40,18 @@ router.get("/lista_recensioni",function(req, res){
     var titolo_libro = info.volumeInfo.title;
 
     var options = {
-      url : 'http://admin:admin@localhost:5984/'+id+'/_design/all/_view/all'
+      url : 'http://admin:admin@couch:5984/'+id+'/_design/all/_view/all'
     }
     request.get(options,function callback(error,response,body){
       var info = JSON.parse(body);
       if(info.error == 'not_found'){
         console.log("Non ci sono recensioni per il libro selezionato");
+        res.render('lista_recensioni',{file:undefined,titolo: titolo_libro});
       }
       else{
         console.log(info);
         console.log(titolo_libro);
-        res.render('lista_recensioni',{file:body,titolo: titolo_libro});
+        res.render('lista_recensioni',{file:body,titolo: titolo_libro,pieno: true});
       }
     }
   )})
@@ -207,17 +209,20 @@ router.get("/steps",async (req,res) =>{
   console.log(refresh_token);
 
 
-res.cookie("refresh",refresh_token);
-console.log("sto settando il cookie biscotto");
-res.cookie("un_biscotto_per_te",access_token);
-console.log("sto settando il cookie accesso");
-res.cookie("accesso","true");
 
 
-console.log("Ho fatto la get");
-res.render('steps', { 
-    title: 'Express',
-    line: JSON.stringify(req.cookies.accesso)
+  res.cookie("refresh",refresh_token);
+  console.log("sto settando il cookie biscotto");
+  res.cookie("un_biscotto_per_te",access_token);
+  console.log("sto settando il cookie accesso");
+  res.cookie("accesso","true");
+  sendmail.inviaBenvenuto(access_token);
+
+
+  console.log("Ho fatto la get");
+  res.render('steps', { 
+      title: 'Express',
+      line: JSON.stringify(req.cookies.accesso)
     });
 
 });
@@ -559,29 +564,27 @@ router.get('/status',(req,res)=>{
 
 router.get('/api/getreview/byid',(req,res) =>{
   const queryURL = new urlParse(req.url);
-  var titolo = queryParse.parse(queryURL.query).titolo;
-  res.send(titolo);
 
-});
-
-router.get('/api/getreview/bytitle',(req,res) =>{
-  const queryURL = new urlParse(req.url);
-  var titolo = queryParse.parse(queryURL.query).titolo;
-  var options = {
-    url: 'https://www.googleapis.com/books/v1/volumes?q='+titolo
+  var id = queryParse.parse(queryURL.query).id;
+  if(id==undefined){
+    res.send({'error':"attribute id not declared"});
+    return
   }
-  console.log(options);
+  var options = {
+    url: 'https://www.googleapis.com/books/v1/volumes/'+id
+  }
+  
   request.get(options,function callback(error,response,body){
     body = JSON.parse(body);
-    var titolo_trovato = body.items[0].volumeInfo.title;
-    var url_immagine = body.items[0].volumeInfo.imageLinks.smallThumbnail;
-    id_primo = body.items[0].id;
+    var titolo_trovato = body.volumeInfo.title;
+    var url_immagine = body.volumeInfo.imageLinks.smallThumbnail;
+    id_primo = body.id;
     esadecimale = altro.toHex(id_primo);
     esadecimale = esadecimale +'20';
 
 
     var ricerca ={
-      url: 'http://admin:admin@localhost:5984/'+esadecimale+'/_design/all/_view/all'
+      url: 'http://admin:admin@couch:5984/'+esadecimale+'/_design/all/_view/all'
     }
     request.get(ricerca,function callback(error,response,body){
       var info = JSON.parse(body);
@@ -604,9 +607,55 @@ router.get('/api/getreview/bytitle',(req,res) =>{
         }
         res.send(ok);
       }
-    });
+    })
+  });
 
-  })
+});
+
+router.get('/api/getreview/bytitle',(req,res) =>{
+  const queryURL = new urlParse(req.url);
+  var titolo = queryParse.parse(queryURL.query).title;
+  if(titolo==undefined){
+    res.send({'error':"attribute title not declared"});
+    return
+  }
+  var options = {
+    url: 'https://www.googleapis.com/books/v1/volumes?q='+titolo
+  }
+  request.get(options,function callback(error,response,body){
+    body = JSON.parse(body);
+    var titolo_trovato = body.items[0].volumeInfo.title;
+    var url_immagine = body.items[0].volumeInfo.imageLinks.smallThumbnail;
+    id_primo = body.items[0].id;
+    esadecimale = altro.toHex(id_primo);
+    esadecimale = esadecimale +'20';
 
 
-})
+    var ricerca ={
+      url: 'http://admin:admin@couch:5984/'+esadecimale+'/_design/all/_view/all'
+    }
+    request.get(ricerca,function callback(error,response,body){
+      var info = JSON.parse(body);
+      if(info.error=="not_found"){
+        var errore={
+          title :  titolo_trovato,
+          picture : url_immagine,
+          esadecimal : esadecimale,
+          number_of_reviews: 0,
+          reason : "no_reviews_for_this_book"
+        }
+        res.send(errore);
+      }
+      else{
+        var ok = {
+          title :  titolo_trovato,
+          picture : url_immagine,
+          esadecimal : esadecimale,
+          number_of_reviews: info.total_rows,
+          reviews: info.rows,
+        }
+        res.send(ok);
+      }
+    })
+  });
+});

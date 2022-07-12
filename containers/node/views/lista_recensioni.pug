@@ -46,22 +46,22 @@ html(lang='en')
 
     script.
       var file = !{file};
-      for(i=0;i<file.total_rows;i++){
-        var email = file.rows[i].value[0];
-        var stelle = file.rows[i].value[1];
-        var commento = file.rows[i].value[2];
-        document.write(`
-        <div class = "row" id ="recensioni">
-          <div class ="col">
-            <h4>`+stelle+`</h4>
-        </div>
-          <div class="col">
-            <h4>`+commento+`</h4>
-        </div>
-          <div class="col">
-            <h4>`+email+`</h4> 
-        </div>
-        </div>
-        `)
-      }
+        for(i=0;i<file.total_rows;i++){
+          var email = file.rows[i].value[0];
+          var stelle = file.rows[i].value[1];
+          var commento = file.rows[i].value[2];
+          document.write(`
+          <div class = "row" id ="recensioni">
+            <div class ="col">
+              <h4>`+stelle+`</h4>
+          </div>
+            <div class="col">
+              <h4>`+commento+`</h4>
+          </div>
+            <div class="col">
+              <h4>`+email+`</h4> 
+          </div>
+          </div>
+          `)
+        }
     
