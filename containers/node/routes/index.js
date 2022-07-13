@@ -660,7 +660,7 @@ router.get('/api/getreview/bytitle',(req,res) =>{
           number_of_reviews: info.total_rows,
           reviews: info.rows,
         }
-        res.send(ok);
+        res.status(200).send(ok);
       }
     })
   });
