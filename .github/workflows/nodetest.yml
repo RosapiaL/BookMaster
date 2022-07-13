@@ -10,4 +10,4 @@ jobs:
 
   steps:
     run: npm install
-      - working-directory: ./app
+      working-directory: ./app
