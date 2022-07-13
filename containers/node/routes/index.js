@@ -174,7 +174,7 @@ router.get('/mybook', function(req, res) {
         //client secret
         clientSecret,
         //link to redirect
-        "http://localhost:3000/steps"
+        "https://localhost:443/steps"
     )
     const scopes = ["https://www.googleapis.com/auth/books","https://www.googleapis.com/auth/userinfo.email","https://www.googleapis.com/auth/userinfo.profile","https://www.googleapis.com/auth/calendar"];
     const url = oauth2Client.generateAuthUrl({
@@ -206,7 +206,7 @@ router.get("/steps",async (req,res) =>{
       //client secret
       clientSecret,
       //link to redirect
-      "http://localhost:3000/steps"
+      "https://localhost:443/steps"
   );
   const tokens = await oauth2Client.getToken(code);
   console.log(tokens);
