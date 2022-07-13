@@ -30,7 +30,7 @@ services:
     environment:
       - NAME_OF_NODE=node1
     env_file:
-      - file.env
+      - .env
   node2:
     build: ./containers/node
     ports:
@@ -43,7 +43,7 @@ services:
     environment:
       - NAME_OF_NODE=node2
     env_file:
-      - file.env
+      - .env
   node3:
     build: ./containers/node
     ports:
@@ -64,7 +64,7 @@ services:
     ports:
       - 5984:5984
     env_file:
-      - file.env
+      - .env
     networks:
       - db
     volumes:
@@ -73,7 +73,7 @@ services:
     image: rabbitmq:3-management
     container_name: rabbit
     env_file:
-      - file.env
+      - .env
     ports:
       - 5672:5672
       - 15672:15672
@@ -87,7 +87,7 @@ services:
     networks:
       - rabbit
     env_file:
-      - file.env
+      - .env
 
 networks:
   app:
