@@ -1,1 +1,1 @@
-ls
+docker compose up
