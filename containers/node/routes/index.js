@@ -593,6 +593,17 @@ router.get('/api/getreview/byid',(req,res) =>{
       url: 'http://'+userdb+':'+passdb+'@couch:5984/'+esadecimale+'/_design/all/_view/all'
     }
     request.get(ricerca,function callback(error,response,body){
+      if(body == undefined){
+        var db_offline = {
+          title :  titolo_trovato,
+          picture : url_immagine,
+          esadecimal : esadecimale,
+          number_of_reviews: 0,
+          reason : "db_offline"
+        }
+        res.send(db_offline);
+        return;
+      }
       var info = JSON.parse(body);
       if(info.error=="not_found"){
         var errore={
