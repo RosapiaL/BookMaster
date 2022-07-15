@@ -1,11 +1,11 @@
 /**
- * @api {get} /api/getreview/bytitle?title=:title+libro Richiesta lista recensioni di un libro tramite titolo
+ * @api {get} /api/getreview/bytitle/:title Richiesta lista recensioni di un libro tramite titolo
  * @apiName Getreviewbytitle
  * @apiGroup Titolo
  *
- * @apiParam title+libro titolo del libro di cui si vuole avere la lista delle recensioni
+ * @apiParam title titolo del libro di cui si vuole avere la lista delle recensioni
  * @apiParamExample {text} Esempio-Richiesta:
- *      https://localhost/api/getreiew/bytitle?title=harry+potter
+ *      https://localhost/api/getreiew/bytitle/harry+potter
  * @apiSuccess {String} title titolo del libro trovato
  * @apiSuccess {String} picture copertina del libro trovato
  * @apiSuccess {String} esadecimal identificativo del libro del database (controllo) 
@@ -69,20 +69,24 @@
  *          "reason": "no_reviews_for_this_book"
  *      }
  * 
- * 
+ * @apiError No_books_for_the_title_searched If you search a book that is not found in google books database
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 200 OK
+ *     {'error':"No books with this title"}
  * 
  * 
  * 
  * 
  */
 /**
- * @api {get} /api/getreview/byid?id=:id+libro Richiesta lista recensioni di un libro tramite id_libro di google books
+ * @api {get} /api/getreview/byid/:id Richiesta lista recensioni di un libro tramite id_libro di google books
  * @apiName Getreviewbyid
  * @apiGroup Id
  *
- * @apiParam id+libro id del libro di cui si vuole avere la lista delle recensioni
+ * @apiParam id identificativo del libro di cui si vuole avere la lista delle recensioni
  * @apiParamExample {text} Esempio-Richiesta:
- *      https://localhost/api/getreiew/byid?id=t_i_yQEACAAJ
+ *      https://localhost/api/getreiew/byid/t_i_yQEACAAJ
  * @apiSuccess {String} title titolo del libro trovato
  * @apiSuccess {String} picture copertina del libro trovato
  * @apiSuccess {String} esadecimal identificativo del libro del database (controllo) 
@@ -133,6 +137,7 @@
  * @apiErrorExample Error-Response:
  *     HTTP/1.1 200 OK
  *     {'error':"attribute id not declared"}
+ * 
 * @apiError database_offline database of this book not exist
  *
  * @apiErrorExample Error-Response:
@@ -143,5 +148,11 @@
  *          "esadecimal": "l39434a575462642d52596f4320",
  *          "error": "no_reviews_for_this_book"
  *      }
+ * 
+ *@apiError No_book_found_for_the_id_in_the_url  if you are searching for a book whit id that does not exists in the google book db
+ *
+ *@apiErrorExample Error-Response:
+ *     HTTP/1.1 200 OK
+ *     {'error':"No book for this id in google books"}
  * 
  */
