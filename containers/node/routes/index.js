@@ -553,7 +553,7 @@ function callback(error,response,body){
 
 
 request.get(options,callback);
-  });
+});
 
   
 module.exports = router;
@@ -566,14 +566,19 @@ router.get('/status',(req,res)=>{
   res.send(file);
 })
 
-router.get('/api/getreview/byid',(req,res) =>{
-  const queryURL = new urlParse(req.url);
-
-  var id = queryParse.parse(queryURL.query).id;
-  if(id==undefined){
-    res.send({'error':"attribute id not declared"});
+router.get('/api/getreview/byid', (req,res) =>{
+  res.send({'error':"attribute id not declared"});
     return
-  }
+});
+
+router.get('/api/getreview/bytitle', (req,res) =>{
+  res.send({'error':"attribute title not declared"});
+    return
+});
+
+
+router.get('/api/getreview/byid/:id',(req,res) =>{
+  var id = req.params.id;
   var options = {
     url: 'https://www.googleapis.com/books/v1/volumes/'+id
   }
@@ -633,13 +638,8 @@ router.get('/api/getreview/byid',(req,res) =>{
 
 });
 
-router.get('/api/getreview/bytitle',(req,res) =>{
-  const queryURL = new urlParse(req.url);
-  var titolo = queryParse.parse(queryURL.query).title;
-  if(titolo==undefined){
-    res.send({'error':"attribute title not declared"});
-    return
-  }
+router.get('/api/getreview/bytitle/:title',(req,res) =>{
+  var titolo = req.params.title;
   var options = {
     url: 'https://www.googleapis.com/books/v1/volumes?q='+titolo
   }
