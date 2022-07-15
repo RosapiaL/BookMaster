@@ -1,13 +1,13 @@
 /**
- * @api {get} /api/getreview/bytitle?title=:title Richiesta lista recensioni di un libro tramite titolo
+ * @api {get} /api/getreview/bytitle?title=:title+libro Richiesta lista recensioni di un libro tramite titolo
  * @apiName Getreviewbytitle
  * @apiGroup Titolo
  *
- * @apiParam title titolo del libro di cui si vuole avere la lista delle recensioni
+ * @apiParam title+libro titolo del libro di cui si vuole avere la lista delle recensioni
  * @apiParamExample {text} Esempio-Richiesta:
  *      https://localhost/api/getreiew/bytitle?title=harry+potter
  * @apiSuccess {String} title titolo del libro trovato
- * @apiSuccess {String} picture url dell'immagine di copertina
+ * @apiSuccess {String} picture copertina del libro trovato
  * @apiSuccess {String} esadecimal identificativo del libro del database (controllo) 
  * @apiSuccess {Number} number_of_reviews numero di recensioni totale
  * @apiSuccess {Array} reviews contenuto delle recensioni con star,recensione ed email
@@ -76,15 +76,15 @@
  * 
  */
 /**
- * @api {get} /api/getreview/byid?id=:id Richiesta lista recensioni di un libro tramite id_libro di google books
+ * @api {get} /api/getreview/byid?id=:id+libro Richiesta lista recensioni di un libro tramite id_libro di google books
  * @apiName Getreviewbyid
  * @apiGroup Id
  *
- * @apiParam id id del libro di cui si vuole avere la lista delle recensioni
+ * @apiParam id+libro id del libro di cui si vuole avere la lista delle recensioni
  * @apiParamExample {text} Esempio-Richiesta:
  *      https://localhost/api/getreiew/byid?id=t_i_yQEACAAJ
  * @apiSuccess {String} title titolo del libro trovato
- * @apiSuccess {String} picture url dell'immagine di copertina
+ * @apiSuccess {String} picture copertina del libro trovato
  * @apiSuccess {String} esadecimal identificativo del libro del database (controllo) 
  * @apiSuccess {Number} number_of_reviews numero di recensioni totale
  * @apiSuccess {Array} reviews contenuto delle recensioni con star,recensione ed email
