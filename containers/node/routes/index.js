@@ -593,7 +593,6 @@ router.get('/api/getreview/byid',(req,res) =>{
     esadecimale = altro.toHex(id_primo);
     esadecimale = esadecimale +'20';
 
-
     var ricerca ={
       url: 'http://'+userdb+':'+passdb+'@couch:5984/'+esadecimale+'/_design/all/_view/all'
     }
