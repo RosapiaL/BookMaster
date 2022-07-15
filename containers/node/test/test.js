@@ -38,8 +38,9 @@ describe('Test delle api del sito', () => {
 		chai.request(app)
 			.get('/api/getreview/byid')
 			.end((err, res) => {
-                res.should.have.status(404);
+                res.should.have.status(200);
 				res.should.have.property('body');
+				res.body.error.should.be.equal("attribute id not declared");
 				done();
 			});
 	});
@@ -49,8 +50,9 @@ describe('Test delle api del sito', () => {
 		chai.request(app)
 			.get('/api/getreview/bytitle')
 			.end((err, res) => {
-                res.should.have.status(404);
+                res.should.have.status(200);
 				res.should.have.property('body');
+				res.body.error.should.be.equal("attribute id not declared");
 				done();
 			});
 	});

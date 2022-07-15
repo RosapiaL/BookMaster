@@ -568,13 +568,21 @@ router.get('/status',(req,res)=>{
   res.send(file);
 })
 
+router.get('/api/getreview/byid/',(req,res) =>{
+
+  res.send({'error':"attribute id not declared"});
+
+});
+
+router.get('/api/getreview/bytitle/',(req,res) =>{
+
+  res.send({'error':"attribute title not declared"});
+
+});
+
 router.get('/api/getreview/byid/:id',(req,res) =>{
 
   var id = req.params.id
-  if(id==undefined){
-    res.send({'error':"attribute id not declared"});
-    return
-  }
   var options = {
     url: 'https://www.googleapis.com/books/v1/volumes/'+id
   }
@@ -630,15 +638,18 @@ router.get('/api/getreview/byid/:id',(req,res) =>{
 
 router.get('/api/getreview/bytitle/:title',(req,res) =>{
   var titolo = req.params.title;
-  if(titolo==undefined){
-    res.send({'error':"attribute title not declared"});
-    return
-  }
   var options = {
     url: 'https://www.googleapis.com/books/v1/volumes?q='+titolo
   }
   request.get(options,function callback(error,response,body){
     body = JSON.parse(body);
+    if(body.totalItems==0){
+      var nessun_libro = {
+        'error': 'No books with this title';
+      }
+      res.send(nessun_libro);
+      return;
+    }
     var titolo_trovato = body.items[0].volumeInfo.title;
     var url_immagine = body.items[0].volumeInfo.imageLinks.smallThumbnail;
     id_primo = body.items[0].id;
