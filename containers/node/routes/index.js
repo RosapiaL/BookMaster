@@ -580,6 +580,13 @@ router.get('/api/getreview/byid',(req,res) =>{
   
   request.get(options,function callback(error,response,body){
     body = JSON.parse(body);
+    if(response.statusCode == 503){
+      var id_not_found = {
+        'error': 'No book for this id in google books'
+      }
+      res.send(id_not_found);
+      return;
+    }
     var titolo_trovato = body.volumeInfo.title;
     var url_immagine = body.volumeInfo.imageLinks.smallThumbnail;
     id_primo = body.id;
