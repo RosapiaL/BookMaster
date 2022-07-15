@@ -45,6 +45,16 @@ describe('Test delle api del sito', () => {
 			});
 	});
 
+	it('Endpoint /api dovrebbe restituire 200 OK specifcando che non esiste nessun libro con quell id', (done) => {
+		chai.request(app)
+			.get('/api/getreview/byid/mariorossi')
+			.end((err, res) => {
+                res.should.have.status(200);
+				res.should.have.property('body');
+				res.body.error.should.be.equal("No book for this id in google books");
+				done();
+			});
+	});
 
     it('Endpoint /api dovrebbe restituire 200 OK con body che indica la mancanza di un attributo', (done) => {
 		chai.request(app)
