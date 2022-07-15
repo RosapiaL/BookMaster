@@ -645,7 +645,7 @@ router.get('/api/getreview/bytitle/:title',(req,res) =>{
     body = JSON.parse(body);
     if(body.totalItems==0){
       var nessun_libro = {
-        'error': 'No books with this title';
+        'error': 'No books with this title'
       }
       res.send(nessun_libro);
       return;
