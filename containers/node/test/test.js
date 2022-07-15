@@ -52,7 +52,7 @@ describe('Test delle api del sito', () => {
 			.end((err, res) => {
                 res.should.have.status(200);
 				res.should.have.property('body');
-				res.body.error.should.be.equal("attribute id not declared");
+				res.body.error.should.be.equal("attribute title not declared");
 				done();
 			});
 	});
