@@ -71,4 +71,15 @@ describe('Test delle api del sito', () => {
 				done();
 			});
 	});
+
+	it('Endpoint /api dovrebbe restituire 200 OK specificando che non ha trovato nessun libro con quel nome', (done) => {
+		chai.request(app)
+			.get('/api/getreview/bytitle/jakdhasjdjsjdjsjdhsdhadlalkshhdjsak')
+			.end((err, res) => {
+				res.should.have.status(200);
+				res.should.have.property('body');
+                res.body.error.should.be.equal("No books with this title");
+				done();
+			});
+	});
 });
