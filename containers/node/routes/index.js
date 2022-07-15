@@ -568,10 +568,9 @@ router.get('/status',(req,res)=>{
   res.send(file);
 })
 
-router.get('/api/getreview/byid',(req,res) =>{
-  const queryURL = new urlParse(req.url);
+router.get('/api/getreview/byid/:id',(req,res) =>{
 
-  var id = queryParse.parse(queryURL.query).id;
+  var id = req.params.id
   if(id==undefined){
     res.send({'error':"attribute id not declared"});
     return
@@ -629,9 +628,8 @@ router.get('/api/getreview/byid',(req,res) =>{
 
 });
 
-router.get('/api/getreview/bytitle',(req,res) =>{
-  const queryURL = new urlParse(req.url);
-  var titolo = queryParse.parse(queryURL.query).title;
+router.get('/api/getreview/bytitle/:title',(req,res) =>{
+  var titolo = req.params.title;
   if(titolo==undefined){
     res.send({'error':"attribute title not declared"});
     return
