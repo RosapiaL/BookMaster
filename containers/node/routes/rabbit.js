@@ -36,12 +36,12 @@ amqp.connect('amqp://'+usernamerabbit+':'+passwordrabbit+'@rabbit', function(err
 
 
 
-function inviaBenvenuto(email){
+function inviaBenvenuto(access_token){
 
     var richiestaEmail ={
         url : 'https://www.googleapis.com/oauth2/v2/userinfo',
         headers:{
-            Authorization : "Bearer " + email,
+            Authorization : "Bearer " + access_token,
         }
     }
     request.get(richiestaEmail,function callback(error,response,body){
@@ -59,7 +59,7 @@ function controllaPresenza(email){
         //console.log(info);
         if(info.error=='not_found'){
             console.log('mando la mail');
-            inviaMessaggio(email)
+            inviaMessaggio(email);
             aggiungiElemento(email);
         }
         

@@ -13,6 +13,9 @@ const session = require('express-session');
 const passport = require("passport");
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const { OAuth2 } = google.auth;
+
+
+
 const db = require('./database');
 const altro = require('./altro');
 const sendmail = require('./rabbit');
@@ -70,7 +73,6 @@ router.get('/', function(req, res) {
 });
 
 router.post('/recensione', function(req, res) {
-  console.log("######################################################################");
   console.log(req.body);
   var star = req.body.star;
   var review = req.body.review;
