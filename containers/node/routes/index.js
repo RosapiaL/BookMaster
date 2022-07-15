@@ -645,6 +645,13 @@ router.get('/api/getreview/bytitle/:title',(req,res) =>{
   }
   request.get(options,function callback(error,response,body){
     body = JSON.parse(body);
+    if(body.totalItems ==0){
+      var nessun_libro = {
+        'error' : 'No books with this title'
+      }
+      res.send(nessun_libro);
+      return;
+    }
     var titolo_trovato = body.items[0].volumeInfo.title;
     var url_immagine = body.items[0].volumeInfo.imageLinks.smallThumbnail;
     id_primo = body.items[0].id;
