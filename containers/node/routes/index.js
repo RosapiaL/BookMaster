@@ -22,7 +22,7 @@ const userdb =process.env.DBUSER;
 const passdb =process.env.DBPASS;
 const clientID = process.env.CLIENTID;
 const clientSecret = process.env.CLIENTSECRET;
-
+const api_key = process.env.API_KEY;
 
 router.get("/lista_recensioni",function(req, res){
   const queryURL = new urlParse(req.url);
@@ -123,19 +123,19 @@ router.get('/mybook', function(req, res) {
       const queryURL = new urlParse(req.url);
       var scaffale = queryParse.parse(queryURL.query).scaffale;
       var options_to_read = {
-        url:'https://www.googleapis.com/books/v1/mylibrary/bookshelves/2/volumes?key=AIzaSyCgkSMk35arxIz9xmZ9GPwTAAUxvuVYzzs',
+        url:'https://www.googleapis.com/books/v1/mylibrary/bookshelves/2/volumes?key='+api_key,
         headers:{
           Authorization : "Bearer " + access_token_cookie,
         }
       }
       var options_favorites = {
-        url:'https://www.googleapis.com/books/v1/mylibrary/bookshelves/0/volumes?key=AIzaSyCgkSMk35arxIz9xmZ9GPwTAAUxvuVYzzs',
+        url:'https://www.googleapis.com/books/v1/mylibrary/bookshelves/0/volumes?key='+api_key,
         headers:{
           Authorization : "Bearer " + access_token_cookie,
         }
       }
       var options_read = {
-        url:'https://www.googleapis.com/books/v1/mylibrary/bookshelves/4/volumes?key=AIzaSyCgkSMk35arxIz9xmZ9GPwTAAUxvuVYzzs',
+        url:'https://www.googleapis.com/books/v1/mylibrary/bookshelves/4/volumes?key='+api_key,
         headers:{
           Authorization : "Bearer " + access_token_cookie,
         }
@@ -252,7 +252,7 @@ router.get("/to_read",function(req,res){
     const id = queryParse.parse(queryURL.query).id;
     if(access_token_cookie){
       var options = {
-        url: "https://www.googleapis.com/books/v1/mylibrary/bookshelves/2/addVolume?volumeId="+id+"&key=AIzaSyCgkSMk35arxIz9xmZ9GPwTAAUxvuVYzzs",
+        url: "https://www.googleapis.com/books/v1/mylibrary/bookshelves/2/addVolume?volumeId="+id+"&key="+api_key,
         headers:{
             Authorization : "Bearer " + access_token_cookie,
             'content-type':'application/json',
@@ -280,7 +280,7 @@ router.get("/favorite",function(req,res){
     const id = queryParse.parse(queryURL.query).id;
     if(access_token_cookie){
       var options = {
-        url: "https://www.googleapis.com/books/v1/mylibrary/bookshelves/0/addVolume?volumeId="+id+"&key=AIzaSyCgkSMk35arxIz9xmZ9GPwTAAUxvuVYzzs",
+        url: "https://www.googleapis.com/books/v1/mylibrary/bookshelves/0/addVolume?volumeId="+id+"&key="+api_key,
         headers:{
             Authorization : "Bearer " + access_token_cookie,
             'content-type':'application/json',
@@ -303,7 +303,7 @@ router.get("/favorite",function(req,res){
 async function rimozione_asincrona(access_token, id,req,res){
 
   var options = {
-    url: "https://www.googleapis.com/books/v1/mylibrary/bookshelves/2/removeVolume?volumeId="+id+"&key=AIzaSyCgkSMk35arxIz9xmZ9GPwTAAUxvuVYzzs",
+    url: "https://www.googleapis.com/books/v1/mylibrary/bookshelves/2/removeVolume?volumeId="+id+"&key="+api_key,
     headers:{
         Authorization : "Bearer " + access_token,
         'content-type':'application/json',
@@ -322,7 +322,7 @@ async function rimozione_asincrona(access_token, id,req,res){
 async function aggiunta_asincrona(access_token, id,req,res){
 
   var options = {
-    url: "https://www.googleapis.com/books/v1/mylibrary/bookshelves/4/addVolume?volumeId="+id+"&key=AIzaSyCgkSMk35arxIz9xmZ9GPwTAAUxvuVYzzs",
+    url: "https://www.googleapis.com/books/v1/mylibrary/bookshelves/4/addVolume?volumeId="+id+"&key="+api_key,
     headers:{
         Authorization : "Bearer " + access_token,
         'content-type':'application/json',
@@ -366,7 +366,7 @@ router.get("/read",function(req,res){
     const id = queryParse.parse(queryURL.query).id;
     if(access_token_cookie){
       var options = {
-        url: "https://www.googleapis.com/books/v1/mylibrary/bookshelves/4/addVolume?volumeId="+id+"&key=AIzaSyCgkSMk35arxIz9xmZ9GPwTAAUxvuVYzzs",
+        url: "https://www.googleapis.com/books/v1/mylibrary/bookshelves/4/addVolume?volumeId="+id+"&key="+api_key,
         headers:{
             Authorization : "Bearer " + access_token_cookie,
             'content-type':'application/json',
@@ -450,9 +450,7 @@ function callback(error,response,body){
       
         const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
         const eventStartTime = new Date();
-        eventStartTime.setDate(eventStartTime.getDay());
         const eventEndTime = new Date();
-        eventEndTime.setDate(eventEndTime.getDay());
         eventEndTime.setMinutes(eventEndTime.getMinutes() + 30);
         const event = {
           summary: title, 
@@ -460,11 +458,11 @@ function callback(error,response,body){
           colorId: 4,
           start: {
             dateTime: eventStartTime,
-            timeZone: 'America/Denver',
+            timeZone: 'Europe/Rome',
           },
           end: {
             dateTime: eventEndTime,
-            timeZone: 'America/Denver',
+            timeZone: 'Europe/Rome',
           },
           'recurrence': [
             'RRULE:FREQ=DAILY;COUNT='+giorni,
@@ -475,7 +473,7 @@ function callback(error,response,body){
             resource: {
               timeMin: eventStartTime,
               timeMax: eventEndTime,
-              timeZone: 'America/Denver',
+              timeZone: 'Europe/Rome',
               items: [{ id: 'primary' }],
             },
           },
@@ -514,12 +512,12 @@ function callback(error,response,body){
 
 
 
-
+//API RICERCA LIBRI
 router.get('/book', function(req, res) {
   const queryURL = new urlParse(req.url);
   const search = queryParse.parse(queryURL.query).search;
   var options = {
-    url:'https://www.googleapis.com/books/v1/volumes?q='+search+'&key=AIzaSyCgkSMk35arxIz9xmZ9GPwTAAUxvuVYzzs',
+    url:'https://www.googleapis.com/books/v1/volumes?q='+search+'&key='+api_key,
 }
 function callback(error,response,body){
     if (!error && response.statusCode == 200){
@@ -568,21 +566,14 @@ router.get('/status',(req,res)=>{
   res.send(file);
 })
 
-router.get('/api/getreview/byid/',(req,res) =>{
+router.get('/api/getreview/byid',(req,res) =>{
+  const queryURL = new urlParse(req.url);
 
-  res.send({'error':"attribute id not declared"});
-
-});
-
-router.get('/api/getreview/bytitle/',(req,res) =>{
-
-  res.send({'error':"attribute title not declared"});
-
-});
-
-router.get('/api/getreview/byid/:id',(req,res) =>{
-
-  var id = req.params.id
+  var id = queryParse.parse(queryURL.query).id;
+  if(id==undefined){
+    res.send({'error':"attribute id not declared"});
+    return
+  }
   var options = {
     url: 'https://www.googleapis.com/books/v1/volumes/'+id
   }
@@ -636,20 +627,18 @@ router.get('/api/getreview/byid/:id',(req,res) =>{
 
 });
 
-router.get('/api/getreview/bytitle/:title',(req,res) =>{
-  var titolo = req.params.title;
+router.get('/api/getreview/bytitle',(req,res) =>{
+  const queryURL = new urlParse(req.url);
+  var titolo = queryParse.parse(queryURL.query).title;
+  if(titolo==undefined){
+    res.send({'error':"attribute title not declared"});
+    return
+  }
   var options = {
     url: 'https://www.googleapis.com/books/v1/volumes?q='+titolo
   }
   request.get(options,function callback(error,response,body){
     body = JSON.parse(body);
-    if(body.totalItems==0){
-      var nessun_libro = {
-        'error': 'No books with this title'
-      }
-      res.send(nessun_libro);
-      return;
-    }
     var titolo_trovato = body.items[0].volumeInfo.title;
     var url_immagine = body.items[0].volumeInfo.imageLinks.smallThumbnail;
     id_primo = body.items[0].id;
