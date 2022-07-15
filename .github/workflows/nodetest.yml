@@ -9,6 +9,7 @@ on:
 env:
   CLIENTID: ${{ secrets.CLIENTID }}
   CLIENTSECRET: ${{ secrets.CLIENTSECRET }}
+  API_KEY : ${{secrets.API_KEY}}
 
 jobs:
   deploy:
