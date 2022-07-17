@@ -18,8 +18,27 @@ Per iniziare bisogna scaricare il codice sorgente del nostro progetto tramite il
 ```
 git clone https://github.com/RosapiaL/Progetto_RetiDiCalcolatori.git
 ```
-
-Poi successivamente se si dispone di Docker si può avviare il progetto trovandosi all interno della cartella principale tramite il comando
+Ora ci dobbiamo spostare all'interno della directory Progetto_RetiDiCalcolatori tramite il comando:
+```
+cd Progetto_RetiDiCalcolatori
+```
+All'interno di questa cartella bisogna creare un file .env in cui bisognerà copiare i dati qui sotto elencati.
+```
+DBUSER = "admin"
+DBPASS = "admin"
+CLIENTID = "620651589897-nj3i7d6lseqnmonr21gkkuvh6ntcbmjc.apps.googleusercontent.com"
+CLIENTSECRET = "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"
+RABBITUSER = "user"
+RABBITPASS = "password"
+MAILUSER = 'rdcbookmaster@gmail.com'
+MAILPASS = 'zxhr xxbq tbdw xidj'
+COUCHDB_USER=admin
+COUCHDB_PASSWORD=admin
+RABBITMQ_DEFAULT_USER=user
+RABBITMQ_DEFAULT_PASS=password
+API_KEY="AIzaSyCgkSMk35arxIz9xmZ9GPwTAAUxvuVYzzs"
+```
+Poi successivamente se si dispone di Docker si può avviare il progetto tramite il comando
 
 ```
 docker-compose up
