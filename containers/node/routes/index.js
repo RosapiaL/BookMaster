@@ -239,7 +239,7 @@ router.get('/logout',function(req,res){
   if(JSON.stringify(req.cookies.accesso)== '"true"'){
     res.clearCookie("un_biscotto_per_te");
     res.clearCookie("accesso");
-    res.clearCookie("refesh_token");
+    res.clearCookie("refresh");
     res.redirect('/mybook');
   }
 
